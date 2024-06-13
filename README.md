@@ -25,4 +25,4 @@ go build main.go
 ```
 ./main
 ```
-Then you can query your own API through [localhost:5050](localhost:5050) or use OpenAPI UI at [localhost:5050/public](localhost:5050/public)
+Then you can query your own API through [localhost:5050](http://localhost:5050) or use OpenAPI UI at [localhost:5050/public](http://localhost:5050/public)
