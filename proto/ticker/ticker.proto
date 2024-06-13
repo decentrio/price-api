@@ -1,0 +1,30 @@
+syntax = "proto3";
+package ticker;
+
+option go_package = "github.com/decentrio/price-api/types/ticker";
+
+message Ticker {
+  string ticker_id = 1;
+  string base_currency = 2;
+  string target_currency = 3;
+  string pool_id = 4;
+  string last_price = 5;
+  uint64 base_volume = 6;
+  uint64 target_volume = 7;
+  uint64 liquidity_in_usd = 8;
+}
+
+message TickerInfo {
+  string ticker_id = 1 [json_name="ticker_id"];
+  string base_currency = 2 [json_name="base_currency"];
+  string target_currency = 3 [json_name="target_currency"];
+  string pool_id = 4 [json_name="pool_id"];
+  string last_price = 5 [json_name="last_price"];
+  string base_volume = 6 [json_name="base_volume"];
+  string target_volume = 7 [json_name="target_volume"];
+  string liquidity_in_usd = 8 [json_name="liquidity_in_usd"];
+}
+
+message TickersRequest {}
+
+message TickersResponse { repeated TickerInfo tickers = 1; }

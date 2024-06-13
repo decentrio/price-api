@@ -10,30 +10,31 @@ import (
 	"github.com/rakyll/statik/fs"
 
 	"google.golang.org/grpc"
-	// "google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 
 	"github.com/decentrio/price-api/app"
-	// "github.com/decentrio/price-api/database"
+	"github.com/decentrio/price-api/database"
+
+	"github.com/decentrio/price-api/app/ticker"
+	"github.com/decentrio/price-api/app/trade"
+	tickertypes "github.com/decentrio/price-api/types/ticker"
+	tradetypes "github.com/decentrio/price-api/types/trade"
 )
 
 func initModule() []app.AppModule {
-	// dbHandler := database.NewDBHandler()
+	dbHandler := database.NewDBHandler()
 
-	// contractKeeper := contract.NewKeeper(dbHandler)
-	// eventKeeper := event.NewKeeper(dbHandler)
-	// ledgerKeeper := ledger.NewKeeper(dbHandler)
-	// transactionKeeper := transaction.NewKeeper(dbHandler)
+	tickerKeeper := ticker.NewKeeper(dbHandler)
+	tradeKeeper := trade.NewKeeper(dbHandler)
 
-	// modules := []app.AppModule{
-	// 	contract.NewAppModule(*contractKeeper),
-	// 	event.NewAppModule(*eventKeeper),
-	// 	ledger.NewAppModule(*ledgerKeeper),
-	// 	transaction.NewAppModule(*transactionKeeper),
-	// }
+	modules := []app.AppModule{
+		ticker.NewAppModule(*tickerKeeper),
+		trade.NewAppModule(*tradeKeeper),
+	}
 
-	return []app.AppModule{}
+	return modules
 }
 
 func runGRPCServer() error {
@@ -54,26 +55,16 @@ func runHTTPServer() error {
 	defer cancel()
 
 	mux := runtime.NewServeMux()
-	// opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	// err := contracttypes.RegisterContractQueryHandlerFromEndpoint(ctx, mux, ":9090", opts)
-	// if err != nil {
-	// 	return err
-	// }
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	err := tickertypes.RegisterTickerQueryHandlerFromEndpoint(ctx, mux, ":9090", opts)
+	if err != nil {
+		return err
+	}
 
-	// err = eventtypes.RegisterEventQueryHandlerFromEndpoint(ctx, mux, ":9090", opts)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// err = ledgertypes.RegisterLedgerQueryHandlerFromEndpoint(ctx, mux, ":9090", opts)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// err = txtypes.RegisterTransactionQueryHandlerFromEndpoint(ctx, mux, ":9090", opts)
-	// if err != nil {
-	// 	return err
-	// }
+	err = tradetypes.RegisterTradeQueryHandlerFromEndpoint(ctx, mux, ":9090", opts)
+	if err != nil {
+		return err
+	}
 
 	http.Handle("/", mux)
 	statikFS, err := fs.New()

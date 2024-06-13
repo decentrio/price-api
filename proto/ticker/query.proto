@@ -1,0 +1,17 @@
+syntax = "proto3";
+package ticker;
+
+import "google/api/annotations.proto";
+import "ticker/ticker.proto";
+
+option go_package = "github.com/decentrio/price-api/types/ticker";
+
+service TickerQuery {
+  // Tickers provides 24-hour pricing and volume information.
+  rpc Tickers(TickersRequest) returns (TickersResponse) {
+    option (google.api.http) = {
+      get : "/tickers"
+      response_body : "tickers"
+    };
+  }
+}

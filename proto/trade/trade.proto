@@ -1,0 +1,32 @@
+syntax = "proto3";
+package trade;
+
+option go_package = "github.com/decentrio/price-api/types/trade";
+
+message Trade {
+  string trade_id = 1;
+  string price = 2;
+  uint64 base_volume = 3;
+  uint64 target_volume = 4;
+  uint64 trade_timestamp = 5;
+  string trade_type = 6;
+}
+
+message TradeInfo {
+  string trade_id = 1 [json_name="trade_id"];
+  string price = 2 [json_name="price"];
+  string base_volume = 3 [json_name="base_volume"];
+  string target_volume = 4 [json_name="target_volume"];
+  uint64 trade_timestamp = 5 [json_name="trade_timestamp"];
+  string type = 6 [json_name="type"];
+}
+
+message TradesRequest {
+  string ticker_id = 1;
+  string type = 2;
+  uint32 limit = 3;
+  uint64 start_time = 4;
+  uint64 end_time = 5;
+}
+
+message TradesResponse { repeated TradeInfo trades = 1; }
