@@ -38,7 +38,7 @@ func initModule() []app.AppModule {
 }
 
 func runGRPCServer() error {
-	lis, err := net.Listen("tcp", ":9090")
+	lis, err := net.Listen("tcp", ":5060")
 	if err != nil {
 		return err
 	}
@@ -56,12 +56,12 @@ func runHTTPServer() error {
 
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	err := tickertypes.RegisterTickerQueryHandlerFromEndpoint(ctx, mux, ":9090", opts)
+	err := tickertypes.RegisterTickerQueryHandlerFromEndpoint(ctx, mux, ":5060", opts)
 	if err != nil {
 		return err
 	}
 
-	err = tradetypes.RegisterTradeQueryHandlerFromEndpoint(ctx, mux, ":9090", opts)
+	err = tradetypes.RegisterTradeQueryHandlerFromEndpoint(ctx, mux, ":5060", opts)
 	if err != nil {
 		return err
 	}
@@ -77,8 +77,8 @@ func runHTTPServer() error {
 
 	http.Handle("/public/", http.StripPrefix("/public/", staticServer))
 
-	log.Println("HTTP server listening on :8080")
-	return http.ListenAndServe(":8080", nil)
+	log.Println("HTTP server listening on :5050")
+	return http.ListenAndServe(":5050", nil)
 }
 
 func main() {
