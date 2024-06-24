@@ -51,7 +51,10 @@ func (k Keeper) Trades(ctx context.Context, request *types.TradesRequest) (*type
 	var tradeInfos []*types.TradeInfo
 
 	for _, trade := range trades {
-		tradeInfos = append(tradeInfos, convertToInfo(trade))
+		tradeInfo := convertToInfo(trade)
+		tradeInfo.TickerId = request.TickerId
+
+		tradeInfos = append(tradeInfos, tradeInfo)
 	}
 
 	return &types.TradesResponse{

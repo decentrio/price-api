@@ -19,6 +19,7 @@ message TradeInfo {
   double target_volume = 4 [json_name="target_volume"];
   uint64 trade_timestamp = 5 [json_name="trade_timestamp"];
   string type = 6 [json_name="type"];
+  string ticker_id = 7 [json_name="ticker_id"];
 }
 
 message TradesRequest {
