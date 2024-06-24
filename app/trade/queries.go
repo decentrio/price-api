@@ -2,7 +2,6 @@ package trade
 
 import (
 	"context"
-	"strconv"
 	"strings"
 
 	app "github.com/decentrio/price-api/app"
@@ -65,8 +64,8 @@ func convertToInfo(trade *types.Trade) *types.TradeInfo {
 	return &types.TradeInfo{
 		TradeId:        trade.TradeId,
 		Price:          trade.Price,
-		BaseVolume:     strconv.FormatFloat(baseVol, 'f', 7, 64),
-		TargetVolume:   strconv.FormatFloat(targetVol, 'f', 7, 64),
+		BaseVolume:     baseVol,
+		TargetVolume:   targetVol,
 		TradeTimestamp: trade.TradeTimestamp * 1000,
 		Type:           trade.TradeType,
 	}

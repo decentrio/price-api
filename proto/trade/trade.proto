@@ -5,7 +5,7 @@ option go_package = "github.com/decentrio/price-api/types/trade";
 
 message Trade {
   uint32 trade_id = 1;
-  string price = 2;
+  double price = 2;
   uint64 base_volume = 3;
   uint64 target_volume = 4;
   uint64 trade_timestamp = 5;
@@ -14,9 +14,9 @@ message Trade {
 
 message TradeInfo {
   uint32 trade_id = 1 [json_name="trade_id"];
-  string price = 2 [json_name="price"];
-  string base_volume = 3 [json_name="base_volume"];
-  string target_volume = 4 [json_name="target_volume"];
+  double price = 2 [json_name="price"];
+  double base_volume = 3 [json_name="base_volume"];
+  double target_volume = 4 [json_name="target_volume"];
   uint64 trade_timestamp = 5 [json_name="trade_timestamp"];
   string type = 6 [json_name="type"];
 }
