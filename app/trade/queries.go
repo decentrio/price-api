@@ -23,6 +23,8 @@ func (k Keeper) Trades(ctx context.Context, request *types.TradesRequest) (*type
 
 	if request.TickerId == TickerId {
 		query = query.Where("ticker_id = ?", SymbolTickerId)
+	} else {
+		query = query.Where("ticker_id = ?", request.TickerId)
 	}
 
 	// if request.TickerId != "" {
