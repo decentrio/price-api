@@ -32,10 +32,10 @@ func (k Keeper) Trades(ctx context.Context, request *types.TradesRequest) (*type
 		query = query.Where("trade_type = ?", strings.ToLower(request.Type))
 	}
 	if request.StartTime != 0 {
-		query = query.Where("trade_timestamp >= ?", request.StartTime)
+		query = query.Where("trade_timestamp >= ?", request.StartTime/1000)
 	}
 	if request.EndTime != 0 {
-		query = query.Where("trade_timestamp <= ?", request.EndTime)
+		query = query.Where("trade_timestamp <= ?", request.EndTime/1000)
 	}
 	if request.Limit != 0 {
 		query = query.Limit(int(request.Limit))
