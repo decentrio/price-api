@@ -2,7 +2,6 @@ package ticker
 
 import (
 	"context"
-	"strconv"
 
 	app "github.com/decentrio/price-api/app"
 	types "github.com/decentrio/price-api/types/ticker"
@@ -40,8 +39,10 @@ func convertToInfo(ticker *types.Ticker) *types.TickerInfo {
 		TargetCurrency: ticker.TargetCurrency,
 		PoolId:         ticker.PoolId,
 		LastPrice:      ticker.LastPrice,
-		BaseVolume:     strconv.FormatFloat(baseVol, 'f', 7, 64),
-		TargetVolume:   strconv.FormatFloat(targetVol, 'f', 7, 64),
-		LiquidityInUsd: strconv.FormatFloat(liquidUsd, 'f', 7, 64),
+		BaseVolume:     baseVol,
+		TargetVolume:   targetVol,
+		High:           ticker.High,
+		Low:            ticker.Low,
+		LiquidityInUsd: liquidUsd,
 	}
 }
