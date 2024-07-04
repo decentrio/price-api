@@ -8,10 +8,12 @@ message Ticker {
   string base_currency = 2;
   string target_currency = 3;
   string pool_id = 4;
-  string last_price = 5;
+  double last_price = 5;
   uint64 base_volume = 6;
   uint64 target_volume = 7;
-  uint64 liquidity_in_usd = 8;
+  double high = 8;
+  double low = 9;
+  uint64 liquidity_in_usd = 10;
 }
 
 message TickerInfo {
@@ -19,10 +21,12 @@ message TickerInfo {
   string base_currency = 2 [json_name="base_currency"];
   string target_currency = 3 [json_name="target_currency"];
   string pool_id = 4 [json_name="pool_id"];
-  string last_price = 5 [json_name="last_price"];
-  string base_volume = 6 [json_name="base_volume"];
-  string target_volume = 7 [json_name="target_volume"];
-  string liquidity_in_usd = 8 [json_name="liquidity_in_usd"];
+  double last_price = 5 [json_name="last_price"];
+  double base_volume = 6 [json_name="base_volume"];
+  double target_volume = 7 [json_name="target_volume"];
+  double high = 8 [json_name="high"];
+  double low = 9 [json_name="low"];
+  double liquidity_in_usd = 10 [json_name="liquidity_in_usd"];
 }
 
 message TickersRequest {}
