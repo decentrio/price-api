@@ -14,4 +14,21 @@ service TickerQuery {
       response_body : "tickers"
     };
   }
+
+  // Liquidity
+  rpc PoolTotalLiquidityInUsd(PoolTotalLiquidityInUsdRequest) returns (PoolTotalLiquidityInUsdResponse) {
+    option (google.api.http).get = "/liquidity/{contract_id}/total_in_usd";
+  }
+}
+
+message TickersRequest {}
+
+message TickersResponse { repeated TickerInfo tickers = 1; }
+
+message PoolTotalLiquidityInUsdRequest{
+  string contract_id = 1;
+}
+
+message PoolTotalLiquidityInUsdResponse{
+  double amount = 1;
 }

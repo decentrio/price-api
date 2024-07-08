@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	TickerQuery_Tickers_FullMethodName = "/ticker.TickerQuery/Tickers"
+	TickerQuery_Tickers_FullMethodName                 = "/ticker.TickerQuery/Tickers"
+	TickerQuery_PoolTotalLiquidityInUsd_FullMethodName = "/ticker.TickerQuery/PoolTotalLiquidityInUsd"
 )
 
 // TickerQueryClient is the client API for TickerQuery service.
@@ -28,6 +29,8 @@ const (
 type TickerQueryClient interface {
 	// Tickers provides 24-hour pricing and volume information.
 	Tickers(ctx context.Context, in *TickersRequest, opts ...grpc.CallOption) (*TickersResponse, error)
+	// Liquidity
+	PoolTotalLiquidityInUsd(ctx context.Context, in *PoolTotalLiquidityInUsdRequest, opts ...grpc.CallOption) (*PoolTotalLiquidityInUsdResponse, error)
 }
 
 type tickerQueryClient struct {
@@ -48,12 +51,24 @@ func (c *tickerQueryClient) Tickers(ctx context.Context, in *TickersRequest, opt
 	return out, nil
 }
 
+func (c *tickerQueryClient) PoolTotalLiquidityInUsd(ctx context.Context, in *PoolTotalLiquidityInUsdRequest, opts ...grpc.CallOption) (*PoolTotalLiquidityInUsdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PoolTotalLiquidityInUsdResponse)
+	err := c.cc.Invoke(ctx, TickerQuery_PoolTotalLiquidityInUsd_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TickerQueryServer is the server API for TickerQuery service.
 // All implementations must embed UnimplementedTickerQueryServer
 // for forward compatibility
 type TickerQueryServer interface {
 	// Tickers provides 24-hour pricing and volume information.
 	Tickers(context.Context, *TickersRequest) (*TickersResponse, error)
+	// Liquidity
+	PoolTotalLiquidityInUsd(context.Context, *PoolTotalLiquidityInUsdRequest) (*PoolTotalLiquidityInUsdResponse, error)
 	mustEmbedUnimplementedTickerQueryServer()
 }
 
@@ -63,6 +78,9 @@ type UnimplementedTickerQueryServer struct {
 
 func (UnimplementedTickerQueryServer) Tickers(context.Context, *TickersRequest) (*TickersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Tickers not implemented")
+}
+func (UnimplementedTickerQueryServer) PoolTotalLiquidityInUsd(context.Context, *PoolTotalLiquidityInUsdRequest) (*PoolTotalLiquidityInUsdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PoolTotalLiquidityInUsd not implemented")
 }
 func (UnimplementedTickerQueryServer) mustEmbedUnimplementedTickerQueryServer() {}
 
@@ -95,6 +113,24 @@ func _TickerQuery_Tickers_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TickerQuery_PoolTotalLiquidityInUsd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PoolTotalLiquidityInUsdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TickerQueryServer).PoolTotalLiquidityInUsd(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TickerQuery_PoolTotalLiquidityInUsd_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TickerQueryServer).PoolTotalLiquidityInUsd(ctx, req.(*PoolTotalLiquidityInUsdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TickerQuery_ServiceDesc is the grpc.ServiceDesc for TickerQuery service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -105,6 +141,10 @@ var TickerQuery_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Tickers",
 			Handler:    _TickerQuery_Tickers_Handler,
+		},
+		{
+			MethodName: "PoolTotalLiquidityInUsd",
+			Handler:    _TickerQuery_PoolTotalLiquidityInUsd_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

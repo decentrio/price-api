@@ -46,3 +46,15 @@ func convertToInfo(ticker *types.Ticker) *types.TickerInfo {
 		LiquidityInUsd: liquidUsd,
 	}
 }
+
+// Liquidity
+func (k Keeper) PoolTotalLiquidityInUsd(ctx context.Context, request *types.PoolTotalLiquidityInUsdRequest) (*types.PoolTotalLiquidityInUsdResponse, error) {
+	var tickerInfo types.TickerInfo
+
+	// get liquidity
+	k.dbHandler.Table("tickers").Where("pool_id = ?", request.ContractId).Scan(&tickerInfo)
+
+	return &types.PoolTotalLiquidityInUsdResponse{
+		Amount: tickerInfo.LiquidityInUsd,
+	}, nil
+}

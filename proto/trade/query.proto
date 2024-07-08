@@ -8,8 +8,7 @@ option go_package = "github.com/decentrio/price-api/types/trade";
 
 service TradeQuery {
   // Trades is used to return data on historical completed trades for a given market pair.
-  rpc Trades(TradesRequest)
-      returns (TradesResponse) {
+  rpc Trades(TradesRequest) returns (TradesResponse) {
     option (google.api.http) = {
       get: "/historical_trades"
       response_body: "trades"

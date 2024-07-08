@@ -29,6 +29,3 @@ message TickerInfo {
   double liquidity_in_usd = 10 [json_name="liquidity_in_usd"];
 }
 
-message TickersRequest {}
-
-message TickersResponse { repeated TickerInfo tickers = 1; }
