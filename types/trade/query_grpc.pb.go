@@ -22,6 +22,7 @@ const (
 	TradeQuery_Trades_FullMethodName                = "/trade.TradeQuery/Trades"
 	TradeQuery_TradingVolumePerWeek_FullMethodName  = "/trade.TradeQuery/TradingVolumePerWeek"
 	TradeQuery_TradingVolumePerMonth_FullMethodName = "/trade.TradeQuery/TradingVolumePerMonth"
+	TradeQuery_TradingVolumePerDay_FullMethodName   = "/trade.TradeQuery/TradingVolumePerDay"
 )
 
 // TradeQueryClient is the client API for TradeQuery service.
@@ -32,6 +33,7 @@ type TradeQueryClient interface {
 	Trades(ctx context.Context, in *TradesRequest, opts ...grpc.CallOption) (*TradesResponse, error)
 	TradingVolumePerWeek(ctx context.Context, in *TradingVolumePerWeekRequest, opts ...grpc.CallOption) (*TradingVolumePerWeekResponse, error)
 	TradingVolumePerMonth(ctx context.Context, in *TradingVolumePerMonthRequest, opts ...grpc.CallOption) (*TradingVolumePerMonthResponse, error)
+	TradingVolumePerDay(ctx context.Context, in *TradingVolumePerDayRequest, opts ...grpc.CallOption) (*TradingVolumePerDayResponse, error)
 }
 
 type tradeQueryClient struct {
@@ -72,6 +74,16 @@ func (c *tradeQueryClient) TradingVolumePerMonth(ctx context.Context, in *Tradin
 	return out, nil
 }
 
+func (c *tradeQueryClient) TradingVolumePerDay(ctx context.Context, in *TradingVolumePerDayRequest, opts ...grpc.CallOption) (*TradingVolumePerDayResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TradingVolumePerDayResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_TradingVolumePerDay_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TradeQueryServer is the server API for TradeQuery service.
 // All implementations must embed UnimplementedTradeQueryServer
 // for forward compatibility
@@ -80,6 +92,7 @@ type TradeQueryServer interface {
 	Trades(context.Context, *TradesRequest) (*TradesResponse, error)
 	TradingVolumePerWeek(context.Context, *TradingVolumePerWeekRequest) (*TradingVolumePerWeekResponse, error)
 	TradingVolumePerMonth(context.Context, *TradingVolumePerMonthRequest) (*TradingVolumePerMonthResponse, error)
+	TradingVolumePerDay(context.Context, *TradingVolumePerDayRequest) (*TradingVolumePerDayResponse, error)
 	mustEmbedUnimplementedTradeQueryServer()
 }
 
@@ -95,6 +108,9 @@ func (UnimplementedTradeQueryServer) TradingVolumePerWeek(context.Context, *Trad
 }
 func (UnimplementedTradeQueryServer) TradingVolumePerMonth(context.Context, *TradingVolumePerMonthRequest) (*TradingVolumePerMonthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TradingVolumePerMonth not implemented")
+}
+func (UnimplementedTradeQueryServer) TradingVolumePerDay(context.Context, *TradingVolumePerDayRequest) (*TradingVolumePerDayResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TradingVolumePerDay not implemented")
 }
 func (UnimplementedTradeQueryServer) mustEmbedUnimplementedTradeQueryServer() {}
 
@@ -163,6 +179,24 @@ func _TradeQuery_TradingVolumePerMonth_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TradeQuery_TradingVolumePerDay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TradingVolumePerDayRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).TradingVolumePerDay(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_TradingVolumePerDay_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).TradingVolumePerDay(ctx, req.(*TradingVolumePerDayRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TradeQuery_ServiceDesc is the grpc.ServiceDesc for TradeQuery service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -181,6 +215,10 @@ var TradeQuery_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TradingVolumePerMonth",
 			Handler:    _TradeQuery_TradingVolumePerMonth_Handler,
+		},
+		{
+			MethodName: "TradingVolumePerDay",
+			Handler:    _TradeQuery_TradingVolumePerDay_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

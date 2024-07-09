@@ -46,3 +46,15 @@ message TradeVolumeByMonth {
   uint64 token_a_volume = 2;
   uint64 token_b_volume = 3;
 }
+
+message Date {
+  uint32 day = 1;
+  uint32 month = 2;
+  uint32 year = 3; 
+}
+
+message TradeVolumeByDate {
+  Date date = 1;
+  uint64 token_a_volume = 2;
+  uint64 token_b_volume = 3;
+}

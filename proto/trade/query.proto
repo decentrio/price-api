@@ -20,6 +20,9 @@ service TradeQuery {
   rpc TradingVolumePerMonth(TradingVolumePerMonthRequest) returns (TradingVolumePerMonthResponse) {
     option (google.api.http).get = "/trading-vol/{contract_id}/permonth";
   }
+  rpc TradingVolumePerDay(TradingVolumePerDayRequest) returns (TradingVolumePerDayResponse) {
+    option (google.api.http).get = "/trading-vol/{contract_id}/perday";
+  }
 }
 
 message TradesRequest {
@@ -50,4 +53,14 @@ message TradingVolumePerMonthRequest {
 
 message TradingVolumePerMonthResponse {
   repeated TradeVolumeByMonth trading_volume = 1;
+}
+
+message TradingVolumePerDayRequest {
+  string contract_id = 1;
+  uint64 from = 2;
+  uint64 to = 3;
+}
+
+message TradingVolumePerDayResponse {
+  repeated TradeVolumeByDate trading_volume = 1;
 }
