@@ -32,7 +32,17 @@ message Week {
 
 message TradeVolumeByWeek {
   Week week = 1;
-  uint64 base_volume = 2;
-  uint64 target_volume = 3;
+  uint64 token_a_volume = 2;
+  uint64 token_b_volume = 3;
 }
 
+message Month {
+  uint32 year = 1;
+  uint32 month = 2;
+}
+
+message TradeVolumeByMonth {
+  Month month = 1;
+  uint64 token_a_volume = 2;
+  uint64 token_b_volume = 3;
+}

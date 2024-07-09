@@ -95,14 +95,14 @@ func (k Keeper) TradingVolumePerWeek(ctx context.Context, request *types.Trading
 
 		tradingVolume, found := tradingVolumes[tradingWeek]
 		if found {
-			tradingVolume.BaseVolume += trade.BaseVolume
-			tradingVolume.TargetVolume += trade.TargetVolume
+			tradingVolume.TokenAVolume += trade.BaseVolume
+			tradingVolume.TokenBVolume += trade.TargetVolume
 			tradingVolumes[tradingWeek] = tradingVolume
 		} else {
 			tradingVolume := &types.TradeVolumeByWeek{
 				Week:         tradingWeek,
-				BaseVolume:   trade.BaseVolume,
-				TargetVolume: trade.TargetVolume,
+				TokenAVolume: trade.BaseVolume,
+				TokenBVolume: trade.TargetVolume,
 			}
 
 			tradingVolumes[tradingWeek] = tradingVolume
@@ -113,6 +113,58 @@ func (k Keeper) TradingVolumePerWeek(ctx context.Context, request *types.Trading
 	vals := maps.Values(tradingVolumes)
 
 	return &types.TradingVolumePerWeekResponse{
+		TradingVolume: vals,
+	}, nil
+}
+
+func (k Keeper) TradingVolumePerMonth(ctx context.Context, request *types.TradingVolumePerMonthRequest) (*types.TradingVolumePerMonthResponse, error) {
+	// get ticker_id by contract_id
+	var ticker tickertypes.Ticker
+	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
+
+	var trades []*types.Trade
+	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
+		Where("ticker_id = ?", ticker.TickerId).
+		Where("trade_timestamp >= ?", request.From).
+		Where("trade_timestamp <= ?", request.To)
+
+	err := query.Find(&trades).Error
+	if err != nil {
+		return &types.TradingVolumePerMonthResponse{}, nil
+	}
+
+	// calculate volume in month
+	tradingVolumes := make(map[*types.Month]*types.TradeVolumeByMonth)
+
+	for _, trade := range trades {
+		year := time.Unix(int64(trade.TradeTimestamp), 0).Year()
+		month := time.Unix(int64(trade.TradeTimestamp), 0).Month()
+
+		tradingMonth := &types.Month{
+			Year:  uint32(year),
+			Month: uint32(month),
+		}
+
+		tradingVolume, found := tradingVolumes[tradingMonth]
+		if found {
+			tradingVolume.TokenAVolume += trade.BaseVolume
+			tradingVolume.TokenBVolume += trade.TargetVolume
+			tradingVolumes[tradingMonth] = tradingVolume
+		} else {
+			tradingVolume := &types.TradeVolumeByMonth{
+				Month:        tradingMonth,
+				TokenAVolume: trade.BaseVolume,
+				TokenBVolume: trade.TargetVolume,
+			}
+
+			tradingVolumes[tradingMonth] = tradingVolume
+		}
+
+	}
+
+	vals := maps.Values(tradingVolumes)
+
+	return &types.TradingVolumePerMonthResponse{
 		TradingVolume: vals,
 	}, nil
 }
