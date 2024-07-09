@@ -29,6 +29,15 @@ service TradeQuery {
   rpc PriceGraph(PriceGraphRequest) returns (PriceGraphResponse) {
     option (google.api.http).get = "/ratio/{contract_id}";
   }
+  rpc PriceGraphLastWeek(PriceGraphLastWeekRequest) returns (PriceGraphLastWeekResponse) {
+    option (google.api.http).get = "/ratio/{contract_id}/lastweek";
+  }
+  rpc PriceGraphLastMonth(PriceGraphLastMonthRequest) returns (PriceGraphLastMonthResponse) {
+    option (google.api.http).get = "/ratio/{contract_id}/lastmonth";
+  }
+  rpc PriceGraphLastYear(PriceGraphLastYearRequest) returns (PriceGraphLastYearResponse) {
+    option (google.api.http).get = "/ratio/{contract_id}/lastyear";
+  }
 }
 
 message TradesRequest {
@@ -88,5 +97,29 @@ message PriceGraphRequest {
 }
 
 message PriceGraphResponse {
+  repeated PriceGraph graph = 1;
+}
+
+message PriceGraphLastWeekRequest {
+  string contract_id = 1;
+}
+
+message PriceGraphLastWeekResponse {
+  repeated PriceGraph graph = 1;
+}
+
+message PriceGraphLastMonthRequest {
+  string contract_id = 1;
+}
+
+message PriceGraphLastMonthResponse {
+  repeated PriceGraph graph = 1;
+}
+
+message PriceGraphLastYearRequest {
+  string contract_id = 1;
+}
+
+message PriceGraphLastYearResponse {
   repeated PriceGraph graph = 1;
 }
