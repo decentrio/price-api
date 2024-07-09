@@ -3,10 +3,15 @@ package trade
 import (
 	"context"
 	"strings"
+	"time"
 
 	app "github.com/decentrio/price-api/app"
+	tickertypes "github.com/decentrio/price-api/types/ticker"
 	types "github.com/decentrio/price-api/types/trade"
+	"golang.org/x/exp/maps"
 )
+
+var _ types.TradeQueryServer = Keeper{}
 
 func (k Keeper) Trades(ctx context.Context, request *types.TradesRequest) (*types.TradesResponse, error) {
 	var trades []*types.Trade
@@ -58,4 +63,56 @@ func convertToInfo(trade *types.Trade) *types.TradeInfo {
 		Type:           trade.TradeType,
 		TickerId:       trade.TickerId,
 	}
+}
+
+// historical trading volume
+func (k Keeper) TradingVolumePerWeek(ctx context.Context, request *types.TradingVolumePerWeekRequest) (*types.TradingVolumePerWeekResponse, error) {
+	// get ticker_id by contract_id
+	var ticker tickertypes.Ticker
+	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
+
+	var trades []*types.Trade
+	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
+		Where("ticker_id = ?", ticker.TickerId).
+		Where("trade_timestamp >= ?", request.From).
+		Where("trade_timestamp <= ?", request.To)
+
+	err := query.Find(&trades).Error
+	if err != nil {
+		return &types.TradingVolumePerWeekResponse{}, nil
+	}
+
+	// calculate volume in week
+	tradingVolumes := make(map[*types.Week]*types.TradeVolumeByWeek)
+
+	for _, trade := range trades {
+		year, week := time.Unix(int64(trade.TradeTimestamp), 0).ISOWeek()
+
+		tradingWeek := &types.Week{
+			Year: uint32(year),
+			Week: uint32(week),
+		}
+
+		tradingVolume, found := tradingVolumes[tradingWeek]
+		if found {
+			tradingVolume.BaseVolume += trade.BaseVolume
+			tradingVolume.TargetVolume += trade.TargetVolume
+			tradingVolumes[tradingWeek] = tradingVolume
+		} else {
+			tradingVolume := &types.TradeVolumeByWeek{
+				Week:         tradingWeek,
+				BaseVolume:   trade.BaseVolume,
+				TargetVolume: trade.TargetVolume,
+			}
+
+			tradingVolumes[tradingWeek] = tradingVolume
+		}
+
+	}
+
+	vals := maps.Values(tradingVolumes)
+
+	return &types.TradingVolumePerWeekResponse{
+		TradingVolume: vals,
+	}, nil
 }

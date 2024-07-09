@@ -16,5 +16,3 @@ func NewKeeper(db *gorm.DB) *Keeper {
 		dbHandler: db,
 	}
 }
-
-var _ types.TradeQueryServer = Keeper{}

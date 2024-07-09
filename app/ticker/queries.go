@@ -52,7 +52,7 @@ func (k Keeper) PoolTotalLiquidityInUsd(ctx context.Context, request *types.Pool
 	var ticker types.Ticker
 
 	// get liquidity
-	k.dbHandler.Table("tickers").Where("pool_id = ?", request.ContractId).Scan(&ticker)
+	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
 
 	return &types.PoolTotalLiquidityInUsdResponse{
 		Amount: float64(ticker.LiquidityInUsd) / 10000000.0,

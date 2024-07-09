@@ -14,4 +14,27 @@ service TradeQuery {
       response_body: "trades"
     };
   }
+  rpc TradingVolumePerWeek(TradingVolumePerWeekRequest) returns (TradingVolumePerWeekResponse) {
+    option (google.api.http).get = "/trading-vol/{contract_id}/perweek";
+  }
+}
+
+message TradesRequest {
+  string ticker_id = 1;
+  string type = 2;
+  uint32 limit = 3;
+  uint64 start_time = 4;
+  uint64 end_time = 5;
+}
+
+message TradesResponse { repeated TradeInfo trades = 1; }
+
+message TradingVolumePerWeekRequest {
+  string contract_id = 1;
+  uint64 from = 2;
+  uint64 to = 3;
+}
+
+message TradingVolumePerWeekResponse {
+  repeated TradeVolumeByWeek trading_volume = 1;
 }
