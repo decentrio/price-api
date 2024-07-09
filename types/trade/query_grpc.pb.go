@@ -24,6 +24,7 @@ const (
 	TradeQuery_TradingVolumePerMonth_FullMethodName = "/trade.TradeQuery/TradingVolumePerMonth"
 	TradeQuery_TradingVolumePerDay_FullMethodName   = "/trade.TradeQuery/TradingVolumePerDay"
 	TradeQuery_TradingVolumePerHour_FullMethodName  = "/trade.TradeQuery/TradingVolumePerHour"
+	TradeQuery_PriceGraph_FullMethodName            = "/trade.TradeQuery/PriceGraph"
 )
 
 // TradeQueryClient is the client API for TradeQuery service.
@@ -36,6 +37,7 @@ type TradeQueryClient interface {
 	TradingVolumePerMonth(ctx context.Context, in *TradingVolumePerMonthRequest, opts ...grpc.CallOption) (*TradingVolumePerMonthResponse, error)
 	TradingVolumePerDay(ctx context.Context, in *TradingVolumePerDayRequest, opts ...grpc.CallOption) (*TradingVolumePerDayResponse, error)
 	TradingVolumePerHour(ctx context.Context, in *TradingVolumePerHourRequest, opts ...grpc.CallOption) (*TradingVolumePerHourResponse, error)
+	PriceGraph(ctx context.Context, in *PriceGraphRequest, opts ...grpc.CallOption) (*PriceGraphResponse, error)
 }
 
 type tradeQueryClient struct {
@@ -96,6 +98,16 @@ func (c *tradeQueryClient) TradingVolumePerHour(ctx context.Context, in *Trading
 	return out, nil
 }
 
+func (c *tradeQueryClient) PriceGraph(ctx context.Context, in *PriceGraphRequest, opts ...grpc.CallOption) (*PriceGraphResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PriceGraphResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_PriceGraph_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TradeQueryServer is the server API for TradeQuery service.
 // All implementations must embed UnimplementedTradeQueryServer
 // for forward compatibility
@@ -106,6 +118,7 @@ type TradeQueryServer interface {
 	TradingVolumePerMonth(context.Context, *TradingVolumePerMonthRequest) (*TradingVolumePerMonthResponse, error)
 	TradingVolumePerDay(context.Context, *TradingVolumePerDayRequest) (*TradingVolumePerDayResponse, error)
 	TradingVolumePerHour(context.Context, *TradingVolumePerHourRequest) (*TradingVolumePerHourResponse, error)
+	PriceGraph(context.Context, *PriceGraphRequest) (*PriceGraphResponse, error)
 	mustEmbedUnimplementedTradeQueryServer()
 }
 
@@ -127,6 +140,9 @@ func (UnimplementedTradeQueryServer) TradingVolumePerDay(context.Context, *Tradi
 }
 func (UnimplementedTradeQueryServer) TradingVolumePerHour(context.Context, *TradingVolumePerHourRequest) (*TradingVolumePerHourResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TradingVolumePerHour not implemented")
+}
+func (UnimplementedTradeQueryServer) PriceGraph(context.Context, *PriceGraphRequest) (*PriceGraphResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PriceGraph not implemented")
 }
 func (UnimplementedTradeQueryServer) mustEmbedUnimplementedTradeQueryServer() {}
 
@@ -231,6 +247,24 @@ func _TradeQuery_TradingVolumePerHour_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TradeQuery_PriceGraph_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PriceGraphRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).PriceGraph(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_PriceGraph_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).PriceGraph(ctx, req.(*PriceGraphRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TradeQuery_ServiceDesc is the grpc.ServiceDesc for TradeQuery service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -257,6 +291,10 @@ var TradeQuery_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TradingVolumePerHour",
 			Handler:    _TradeQuery_TradingVolumePerHour_Handler,
+		},
+		{
+			MethodName: "PriceGraph",
+			Handler:    _TradeQuery_PriceGraph_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

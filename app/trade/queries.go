@@ -2,6 +2,7 @@ package trade
 
 import (
 	"context"
+	"sort"
 	"strings"
 	"time"
 
@@ -274,5 +275,39 @@ func (k Keeper) TradingVolumePerHour(ctx context.Context, request *types.Trading
 
 	return &types.TradingVolumePerHourResponse{
 		TradingVolume: vals,
+	}, nil
+}
+
+func (k Keeper) PriceGraph(ctx context.Context, request *types.PriceGraphRequest) (*types.PriceGraphResponse, error) {
+	// get ticker_id by contract_id
+	var ticker tickertypes.Ticker
+	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
+
+	var trades []*types.Trade
+	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
+		Where("ticker_id = ?", ticker.TickerId).
+		Where("trade_timestamp >= ?", request.From).
+		Where("trade_timestamp <= ?", request.To)
+
+	err := query.Find(&trades).Error
+	if err != nil {
+		return &types.PriceGraphResponse{}, nil
+	}
+
+	var priceGraphs []*types.PriceGraph
+	for _, trade := range trades {
+		pg := &types.PriceGraph{
+			TimeStamp: trade.TradeTimestamp,
+			Price:     trade.Price,
+		}
+		priceGraphs = append(priceGraphs, pg)
+	}
+
+	sort.Slice(priceGraphs, func(i, j int) bool {
+		return priceGraphs[i].TimeStamp < priceGraphs[j].TimeStamp
+	})
+
+	return &types.PriceGraphResponse{
+		Graph: priceGraphs,
 	}, nil
 }
