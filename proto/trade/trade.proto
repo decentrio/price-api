@@ -58,3 +58,14 @@ message TradeVolumeByDate {
   uint64 token_a_volume = 2;
   uint64 token_b_volume = 3;
 }
+
+message TimeHour {
+  uint32 hour = 1;
+  Date date = 2;
+}
+
+message TradeVolumeByHour {
+  TimeHour time = 1;
+  uint64 token_a_volume = 2;
+  uint64 token_b_volume = 3;
+}
