@@ -311,3 +311,114 @@ func (k Keeper) PriceGraph(ctx context.Context, request *types.PriceGraphRequest
 		Graph: priceGraphs,
 	}, nil
 }
+
+func (k Keeper) PriceGraphLastWeek(ctx context.Context, request *types.PriceGraphLastWeekRequest) (*types.PriceGraphLastWeekResponse, error) {
+	to := time.Now()
+	from := to.Add(-Week)
+
+	// get ticker_id by contract_id
+	var ticker tickertypes.Ticker
+	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
+
+	var trades []*types.Trade
+	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
+		Where("ticker_id = ?", ticker.TickerId).
+		Where("trade_timestamp >= ?", from).
+		Where("trade_timestamp <= ?", to)
+
+	err := query.Find(&trades).Error
+	if err != nil {
+		return &types.PriceGraphLastWeekResponse{}, nil
+	}
+
+	var priceGraphs []*types.PriceGraph
+	for _, trade := range trades {
+		pg := &types.PriceGraph{
+			TimeStamp: trade.TradeTimestamp,
+			Price:     trade.Price,
+		}
+		priceGraphs = append(priceGraphs, pg)
+	}
+
+	sort.Slice(priceGraphs, func(i, j int) bool {
+		return priceGraphs[i].TimeStamp < priceGraphs[j].TimeStamp
+	})
+
+	return &types.PriceGraphLastWeekResponse{
+		Graph: priceGraphs,
+	}, nil
+}
+
+func (k Keeper) PriceGraphLastMonth(ctx context.Context, request *types.PriceGraphLastMonthRequest) (*types.PriceGraphLastMonthResponse, error) {
+	to := time.Now()
+	from := to.Add(-Month)
+
+	// get ticker_id by contract_id
+	var ticker tickertypes.Ticker
+	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
+
+	var trades []*types.Trade
+	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
+		Where("ticker_id = ?", ticker.TickerId).
+		Where("trade_timestamp >= ?", from).
+		Where("trade_timestamp <= ?", to)
+
+	err := query.Find(&trades).Error
+	if err != nil {
+		return &types.PriceGraphLastMonthResponse{}, nil
+	}
+
+	var priceGraphs []*types.PriceGraph
+	for _, trade := range trades {
+		pg := &types.PriceGraph{
+			TimeStamp: trade.TradeTimestamp,
+			Price:     trade.Price,
+		}
+		priceGraphs = append(priceGraphs, pg)
+	}
+
+	sort.Slice(priceGraphs, func(i, j int) bool {
+		return priceGraphs[i].TimeStamp < priceGraphs[j].TimeStamp
+	})
+
+	return &types.PriceGraphLastMonthResponse{
+		Graph: priceGraphs,
+	}, nil
+}
+
+func (k Keeper) PriceGraphLastYear(ctx context.Context, request *types.PriceGraphLastYearRequest) (*types.PriceGraphLastYearResponse, error) {
+	to := time.Now()
+	from := to.Add(-Year)
+
+	// get ticker_id by contract_id
+	var ticker tickertypes.Ticker
+	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
+
+	var trades []*types.Trade
+	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
+		Where("ticker_id = ?", ticker.TickerId).
+		Where("trade_timestamp >= ?", from).
+		Where("trade_timestamp <= ?", to)
+
+	err := query.Find(&trades).Error
+	if err != nil {
+		return &types.PriceGraphLastYearResponse{}, nil
+	}
+
+	var priceGraphs []*types.PriceGraph
+	for _, trade := range trades {
+		pg := &types.PriceGraph{
+			TimeStamp: trade.TradeTimestamp,
+			Price:     trade.Price,
+		}
+		priceGraphs = append(priceGraphs, pg)
+	}
+
+	sort.Slice(priceGraphs, func(i, j int) bool {
+		return priceGraphs[i].TimeStamp < priceGraphs[j].TimeStamp
+	})
+
+	return &types.PriceGraphLastYearResponse{
+		Graph: priceGraphs,
+	}, nil
+}
