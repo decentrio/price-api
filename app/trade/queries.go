@@ -424,17 +424,6 @@ func (k Keeper) PriceGraphLastYear(ctx context.Context, request *types.PriceGrap
 }
 
 func (k Keeper) TradeHistoricals(ctx context.Context, request *types.TradeHistoricalRequest) (*types.TradeHistoricalResponse, error) {
-	page := int(request.Page)
-	if request.Page < 1 {
-		page = 1
-	}
-	pageSize := int(request.PageSize)
-	if request.PageSize < 1 {
-		pageSize = app.PAGE_SIZE
-	}
-
-	offset := (page - 1) * pageSize
-
 	var trades []*types.Trade
 
 	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC")
@@ -448,12 +437,18 @@ func (k Keeper) TradeHistoricals(ctx context.Context, request *types.TradeHistor
 	if request.To != 0 {
 		query = query.Where("trade_timestamp <= ?", request.To)
 	}
-	if pageSize != 0 {
-		query = query.Limit(int(pageSize))
+
+	page := int(request.Page)
+	if request.Page < 1 {
+		page = 1
+	}
+	pageSize := int(request.PageSize)
+	if request.PageSize < 1 {
+		pageSize = app.PAGE_SIZE
 	}
 
-	// add offset
-	query = query.Offset(offset)
+	offset := (page - 1) * pageSize
+	query = query.Limit(int(pageSize)).Offset(offset)
 
 	err := query.Find(&trades).Error
 	if err != nil {
