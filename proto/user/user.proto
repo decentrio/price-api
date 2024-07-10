@@ -1,0 +1,4 @@
+syntax = "proto3";
+package user;
+
+option go_package = "github.com/decentrio/price-api/types/user";

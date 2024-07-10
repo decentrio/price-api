@@ -422,3 +422,51 @@ func (k Keeper) PriceGraphLastYear(ctx context.Context, request *types.PriceGrap
 		Graph: priceGraphs,
 	}, nil
 }
+
+func (k Keeper) TradeHistoricals(ctx context.Context, request *types.TradeHistoricalRequest) (*types.TradeHistoricalResponse, error) {
+	page := int(request.Page)
+	if request.Page < 1 {
+		page = 1
+	}
+	pageSize := int(request.PageSize)
+	if request.PageSize < 1 {
+		pageSize = app.PAGE_SIZE
+	}
+
+	offset := (page - 1) * pageSize
+
+	var trades []*types.Trade
+
+	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC")
+
+	if request.Address != "" {
+		query = query.Where("maker = ?", request.Address)
+	}
+	if request.From != 0 {
+		query = query.Where("trade_timestamp >= ?", request.From)
+	}
+	if request.To != 0 {
+		query = query.Where("trade_timestamp <= ?", request.To)
+	}
+	if pageSize != 0 {
+		query = query.Limit(int(pageSize))
+	}
+
+	// add offset
+	query = query.Offset(offset)
+
+	err := query.Find(&trades).Error
+	if err != nil {
+		return &types.TradeHistoricalResponse{}, nil
+	}
+
+	var tradeInfos []*types.TradeInfo
+
+	for _, trade := range trades {
+		tradeInfos = append(tradeInfos, convertToInfo(trade))
+	}
+
+	return &types.TradeHistoricalResponse{
+		Trades: tradeInfos,
+	}, nil
+}

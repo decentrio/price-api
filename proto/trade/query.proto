@@ -38,6 +38,9 @@ service TradeQuery {
   rpc PriceGraphLastYear(PriceGraphLastYearRequest) returns (PriceGraphLastYearResponse) {
     option (google.api.http).get = "/ratio/{contract_id}/lastyear";
   }
+  rpc TradeHistoricals(TradeHistoricalRequest) returns (TradeHistoricalResponse) {
+    option (google.api.http).get = "/trade-history/{address}";
+  }
 }
 
 message TradesRequest {
@@ -122,4 +125,16 @@ message PriceGraphLastYearRequest {
 
 message PriceGraphLastYearResponse {
   repeated PriceGraph graph = 1;
+}
+
+message TradeHistoricalRequest {
+  string address = 1;
+  uint64 from = 2;
+  uint64 to = 3;
+  int32 page = 4;
+  int32 page_size = 5;
+}
+
+message TradeHistoricalResponse {
+  repeated TradeInfo trades = 1;
 }

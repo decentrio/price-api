@@ -1,0 +1,9 @@
+syntax = "proto3";
+package user;
+
+import "google/api/annotations.proto";
+import "user/user.proto";
+
+option go_package = "github.com/decentrio/price-api/types/user";
+
+service UserQuery {}

@@ -28,6 +28,7 @@ const (
 	TradeQuery_PriceGraphLastWeek_FullMethodName    = "/trade.TradeQuery/PriceGraphLastWeek"
 	TradeQuery_PriceGraphLastMonth_FullMethodName   = "/trade.TradeQuery/PriceGraphLastMonth"
 	TradeQuery_PriceGraphLastYear_FullMethodName    = "/trade.TradeQuery/PriceGraphLastYear"
+	TradeQuery_TradeHistoricals_FullMethodName      = "/trade.TradeQuery/TradeHistoricals"
 )
 
 // TradeQueryClient is the client API for TradeQuery service.
@@ -44,6 +45,7 @@ type TradeQueryClient interface {
 	PriceGraphLastWeek(ctx context.Context, in *PriceGraphLastWeekRequest, opts ...grpc.CallOption) (*PriceGraphLastWeekResponse, error)
 	PriceGraphLastMonth(ctx context.Context, in *PriceGraphLastMonthRequest, opts ...grpc.CallOption) (*PriceGraphLastMonthResponse, error)
 	PriceGraphLastYear(ctx context.Context, in *PriceGraphLastYearRequest, opts ...grpc.CallOption) (*PriceGraphLastYearResponse, error)
+	TradeHistoricals(ctx context.Context, in *TradeHistoricalRequest, opts ...grpc.CallOption) (*TradeHistoricalResponse, error)
 }
 
 type tradeQueryClient struct {
@@ -144,6 +146,16 @@ func (c *tradeQueryClient) PriceGraphLastYear(ctx context.Context, in *PriceGrap
 	return out, nil
 }
 
+func (c *tradeQueryClient) TradeHistoricals(ctx context.Context, in *TradeHistoricalRequest, opts ...grpc.CallOption) (*TradeHistoricalResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TradeHistoricalResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_TradeHistoricals_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TradeQueryServer is the server API for TradeQuery service.
 // All implementations must embed UnimplementedTradeQueryServer
 // for forward compatibility
@@ -158,6 +170,7 @@ type TradeQueryServer interface {
 	PriceGraphLastWeek(context.Context, *PriceGraphLastWeekRequest) (*PriceGraphLastWeekResponse, error)
 	PriceGraphLastMonth(context.Context, *PriceGraphLastMonthRequest) (*PriceGraphLastMonthResponse, error)
 	PriceGraphLastYear(context.Context, *PriceGraphLastYearRequest) (*PriceGraphLastYearResponse, error)
+	TradeHistoricals(context.Context, *TradeHistoricalRequest) (*TradeHistoricalResponse, error)
 	mustEmbedUnimplementedTradeQueryServer()
 }
 
@@ -191,6 +204,9 @@ func (UnimplementedTradeQueryServer) PriceGraphLastMonth(context.Context, *Price
 }
 func (UnimplementedTradeQueryServer) PriceGraphLastYear(context.Context, *PriceGraphLastYearRequest) (*PriceGraphLastYearResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PriceGraphLastYear not implemented")
+}
+func (UnimplementedTradeQueryServer) TradeHistoricals(context.Context, *TradeHistoricalRequest) (*TradeHistoricalResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TradeHistoricals not implemented")
 }
 func (UnimplementedTradeQueryServer) mustEmbedUnimplementedTradeQueryServer() {}
 
@@ -367,6 +383,24 @@ func _TradeQuery_PriceGraphLastYear_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TradeQuery_TradeHistoricals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TradeHistoricalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).TradeHistoricals(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_TradeHistoricals_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).TradeHistoricals(ctx, req.(*TradeHistoricalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TradeQuery_ServiceDesc is the grpc.ServiceDesc for TradeQuery service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -409,6 +443,10 @@ var TradeQuery_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PriceGraphLastYear",
 			Handler:    _TradeQuery_PriceGraphLastYear_Handler,
+		},
+		{
+			MethodName: "TradeHistoricals",
+			Handler:    _TradeQuery_TradeHistoricals_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
