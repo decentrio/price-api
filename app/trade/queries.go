@@ -2,6 +2,7 @@ package trade
 
 import (
 	"context"
+	"fmt"
 	"sort"
 	"strings"
 	"time"
@@ -15,6 +16,9 @@ import (
 var _ types.TradeQueryServer = Keeper{}
 
 func (k Keeper) Trades(ctx context.Context, request *types.TradesRequest) (*types.TradesResponse, error) {
+	if request.TickerId == "" {
+		return &types.TradesResponse{}, fmt.Errorf("error empty ticker id")
+	}
 	var trades []*types.Trade
 
 	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC")
@@ -68,6 +72,9 @@ func convertToInfo(trade *types.Trade) *types.TradeInfo {
 
 // historical trading volume
 func (k Keeper) TradingVolumePerWeek(ctx context.Context, request *types.TradingVolumePerWeekRequest) (*types.TradingVolumePerWeekResponse, error) {
+	if request.ContractId == "" {
+		return &types.TradingVolumePerWeekResponse{}, fmt.Errorf("error empty contract id")
+	}
 	// get ticker_id by contract_id
 	var ticker tickertypes.Ticker
 	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
@@ -119,6 +126,9 @@ func (k Keeper) TradingVolumePerWeek(ctx context.Context, request *types.Trading
 }
 
 func (k Keeper) TradingVolumePerMonth(ctx context.Context, request *types.TradingVolumePerMonthRequest) (*types.TradingVolumePerMonthResponse, error) {
+	if request.ContractId == "" {
+		return &types.TradingVolumePerMonthResponse{}, fmt.Errorf("error empty contract id")
+	}
 	// get ticker_id by contract_id
 	var ticker tickertypes.Ticker
 	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
@@ -171,6 +181,9 @@ func (k Keeper) TradingVolumePerMonth(ctx context.Context, request *types.Tradin
 }
 
 func (k Keeper) TradingVolumePerDay(ctx context.Context, request *types.TradingVolumePerDayRequest) (*types.TradingVolumePerDayResponse, error) {
+	if request.ContractId == "" {
+		return &types.TradingVolumePerDayResponse{}, fmt.Errorf("error empty contract id")
+	}
 	// get ticker_id by contract_id
 	var ticker tickertypes.Ticker
 	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
@@ -223,6 +236,9 @@ func (k Keeper) TradingVolumePerDay(ctx context.Context, request *types.TradingV
 }
 
 func (k Keeper) TradingVolumePerHour(ctx context.Context, request *types.TradingVolumePerHourRequest) (*types.TradingVolumePerHourResponse, error) {
+	if request.ContractId == "" {
+		return &types.TradingVolumePerHourResponse{}, fmt.Errorf("error empty contract id")
+	}
 	// get ticker_id by contract_id
 	var ticker tickertypes.Ticker
 	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
@@ -279,6 +295,10 @@ func (k Keeper) TradingVolumePerHour(ctx context.Context, request *types.Trading
 }
 
 func (k Keeper) PriceGraph(ctx context.Context, request *types.PriceGraphRequest) (*types.PriceGraphResponse, error) {
+	if request.ContractId == "" {
+		return &types.PriceGraphResponse{}, fmt.Errorf("error empty contract id")
+	}
+
 	// get ticker_id by contract_id
 	var ticker tickertypes.Ticker
 	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
@@ -313,8 +333,12 @@ func (k Keeper) PriceGraph(ctx context.Context, request *types.PriceGraphRequest
 }
 
 func (k Keeper) PriceGraphLastWeek(ctx context.Context, request *types.PriceGraphLastWeekRequest) (*types.PriceGraphLastWeekResponse, error) {
-	to := time.Now()
-	from := to.Add(-Week)
+	if request.ContractId == "" {
+		return &types.PriceGraphLastWeekResponse{}, fmt.Errorf("error empty contract id")
+	}
+
+	to := time.Now().Unix()
+	from := time.Now().Add(-Week).Unix()
 
 	// get ticker_id by contract_id
 	var ticker tickertypes.Ticker
@@ -350,8 +374,12 @@ func (k Keeper) PriceGraphLastWeek(ctx context.Context, request *types.PriceGrap
 }
 
 func (k Keeper) PriceGraphLastMonth(ctx context.Context, request *types.PriceGraphLastMonthRequest) (*types.PriceGraphLastMonthResponse, error) {
-	to := time.Now()
-	from := to.Add(-Month)
+	if request.ContractId == "" {
+		return &types.PriceGraphLastMonthResponse{}, fmt.Errorf("error empty contract id")
+	}
+
+	to := time.Now().Unix()
+	from := time.Now().Add(-Month).Unix()
 
 	// get ticker_id by contract_id
 	var ticker tickertypes.Ticker
@@ -387,8 +415,12 @@ func (k Keeper) PriceGraphLastMonth(ctx context.Context, request *types.PriceGra
 }
 
 func (k Keeper) PriceGraphLastYear(ctx context.Context, request *types.PriceGraphLastYearRequest) (*types.PriceGraphLastYearResponse, error) {
-	to := time.Now()
-	from := to.Add(-Year)
+	if request.ContractId == "" {
+		return &types.PriceGraphLastYearResponse{}, fmt.Errorf("error empty contract id")
+	}
+
+	to := time.Now().Unix()
+	from := time.Now().Add(-Year).Unix()
 
 	// get ticker_id by contract_id
 	var ticker tickertypes.Ticker
@@ -424,6 +456,10 @@ func (k Keeper) PriceGraphLastYear(ctx context.Context, request *types.PriceGrap
 }
 
 func (k Keeper) TradeHistoricals(ctx context.Context, request *types.TradeHistoricalRequest) (*types.TradeHistoricalResponse, error) {
+	if request.Address == "" {
+		return &types.TradeHistoricalResponse{}, fmt.Errorf("error empty address")
+	}
+
 	var trades []*types.Trade
 
 	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC")
@@ -462,6 +498,102 @@ func (k Keeper) TradeHistoricals(ctx context.Context, request *types.TradeHistor
 	}
 
 	return &types.TradeHistoricalResponse{
+		Trades: tradeInfos,
+	}, nil
+}
+
+func (k Keeper) LastWeekTradeHistoricals(ctx context.Context, request *types.LastWeekTradeHistoricalRequest) (*types.LastWeekTradeHistoricalResponse, error) {
+	to := time.Now().Unix()
+	from := time.Now().Add(-Week).Unix()
+
+	if request.Address == "" {
+		return &types.LastWeekTradeHistoricalResponse{}, fmt.Errorf("error empty address")
+	}
+
+	var trades []*types.Trade
+
+	query := k.dbHandler.Table(app.TRADE_TABLE).
+		Order("trade_timestamp DESC").
+		Where("maker = ?", request.Address).
+		Where("trade_timestamp >= ?", from).
+		Where("trade_timestamp <= ?", to)
+
+	err := query.Find(&trades).Error
+	if err != nil {
+		return &types.LastWeekTradeHistoricalResponse{}, err
+	}
+
+	var tradeInfos []*types.TradeInfo
+
+	for _, trade := range trades {
+		tradeInfos = append(tradeInfos, convertToInfo(trade))
+	}
+
+	return &types.LastWeekTradeHistoricalResponse{
+		Trades: tradeInfos,
+	}, nil
+}
+
+func (k Keeper) LastMonthTradeHistoricals(ctx context.Context, request *types.LastMonthTradeHistoricalRequest) (*types.LastMonthTradeHistoricalResponse, error) {
+	to := time.Now().Unix()
+	from := time.Now().Add(-Month).Unix()
+
+	if request.Address == "" {
+		return &types.LastMonthTradeHistoricalResponse{}, fmt.Errorf("error empty address")
+	}
+
+	var trades []*types.Trade
+
+	query := k.dbHandler.Table(app.TRADE_TABLE).
+		Order("trade_timestamp DESC").
+		Where("maker = ?", request.Address).
+		Where("trade_timestamp >= ?", from).
+		Where("trade_timestamp <= ?", to)
+
+	err := query.Find(&trades).Error
+	if err != nil {
+		return &types.LastMonthTradeHistoricalResponse{}, err
+	}
+
+	var tradeInfos []*types.TradeInfo
+
+	for _, trade := range trades {
+		tradeInfos = append(tradeInfos, convertToInfo(trade))
+	}
+
+	return &types.LastMonthTradeHistoricalResponse{
+		Trades: tradeInfos,
+	}, nil
+}
+
+func (k Keeper) LastYearTradeHistoricals(ctx context.Context, request *types.LastYearTradeHistoricalRequest) (*types.LastYearTradeHistoricalResponse, error) {
+	to := time.Now().Unix()
+	from := time.Now().Add(-Year).Unix()
+
+	if request.Address == "" {
+		return &types.LastYearTradeHistoricalResponse{}, fmt.Errorf("error empty address")
+	}
+
+	var trades []*types.Trade
+
+	query := k.dbHandler.Table(app.TRADE_TABLE).
+		Order("trade_timestamp DESC").
+		Where("maker = ?", request.Address).
+		Where("trade_timestamp >= ?", from).
+		Where("trade_timestamp <= ?", to)
+
+	err := query.Find(&trades).Error
+	if err != nil {
+		return &types.LastYearTradeHistoricalResponse{}, err
+	}
+
+	var tradeInfos []*types.TradeInfo
+
+	for _, trade := range trades {
+		tradeInfos = append(tradeInfos, convertToInfo(trade))
+	}
+
+	return &types.LastYearTradeHistoricalResponse{
 		Trades: tradeInfos,
 	}, nil
 }

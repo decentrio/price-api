@@ -41,6 +41,15 @@ service TradeQuery {
   rpc TradeHistoricals(TradeHistoricalRequest) returns (TradeHistoricalResponse) {
     option (google.api.http).get = "/trade-history/{address}";
   }
+  rpc LastWeekTradeHistoricals(LastWeekTradeHistoricalRequest) returns (LastWeekTradeHistoricalResponse) {
+    option (google.api.http).get = "/trade-history/{address}/lastweek";
+  }
+  rpc LastMonthTradeHistoricals(LastMonthTradeHistoricalRequest) returns (LastMonthTradeHistoricalResponse) {
+    option (google.api.http).get = "/trade-history/{address}/lastmonth";
+  }
+  rpc LastYearTradeHistoricals(LastYearTradeHistoricalRequest) returns (LastYearTradeHistoricalResponse) {
+    option (google.api.http).get = "/trade-history/{address}/lastyear";
+  }
 }
 
 message TradesRequest {
@@ -136,5 +145,29 @@ message TradeHistoricalRequest {
 }
 
 message TradeHistoricalResponse {
+  repeated TradeInfo trades = 1;
+}
+
+message LastWeekTradeHistoricalRequest {
+  string address = 1;
+}
+
+message LastWeekTradeHistoricalResponse {
+  repeated TradeInfo trades = 1;
+}
+
+message LastMonthTradeHistoricalRequest {
+  string address = 1;
+}
+
+message LastMonthTradeHistoricalResponse {
+  repeated TradeInfo trades = 1;
+}
+
+message LastYearTradeHistoricalRequest {
+  string address = 1;
+}
+
+message LastYearTradeHistoricalResponse {
   repeated TradeInfo trades = 1;
 }
