@@ -7,6 +7,8 @@ import (
 	types "github.com/decentrio/price-api/types/ticker"
 )
 
+var _ types.TickerQueryServer = Keeper{}
+
 func (k Keeper) Tickers(ctx context.Context, request *types.TickersRequest) (*types.TickersResponse, error) {
 	var tickers []*types.Ticker
 
@@ -48,6 +50,39 @@ func convertToInfo(ticker *types.Ticker) *types.TickerInfo {
 }
 
 // Liquidity
+func (k Keeper) PoolShare(ctx context.Context, request *types.PoolShareRequest) (*types.PoolShareResponse, error) {
+	var ticker types.Ticker
+
+	// get liquidity
+	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
+
+	return &types.PoolShareResponse{
+		Amount: float64(ticker.ShareLiquidity) / 10000000.0,
+	}, nil
+}
+
+func (k Keeper) PoolReserveA(ctx context.Context, request *types.PoolReserveARequest) (*types.PoolReserveAResponse, error) {
+	var ticker types.Ticker
+
+	// get liquidity
+	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
+
+	return &types.PoolReserveAResponse{
+		Amount: float64(ticker.BaseLiquidity) / 10000000.0,
+	}, nil
+}
+
+func (k Keeper) PoolReserveB(ctx context.Context, request *types.PoolReserveBRequest) (*types.PoolReserveBResponse, error) {
+	var ticker types.Ticker
+
+	// get liquidity
+	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
+
+	return &types.PoolReserveBResponse{
+		Amount: float64(ticker.TargetLiquidity) / 10000000.0,
+	}, nil
+}
+
 func (k Keeper) PoolTotalLiquidityInUsd(ctx context.Context, request *types.PoolTotalLiquidityInUsdRequest) (*types.PoolTotalLiquidityInUsdResponse, error) {
 	var ticker types.Ticker
 
