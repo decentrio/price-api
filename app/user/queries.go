@@ -19,6 +19,8 @@ func (k Keeper) Activities(ctx context.Context, request *types.ActivitiesRequest
 	err := k.dbHandler.Table(app.ACTIVITIES_TABLE).
 		Order("time_stamp DESC").
 		Where("address = ?", request.Address).
+		Where("time_stamp >= ?", request.From).
+		Where("time_stamp <= ?", request.To).
 		Find(&activityInfos).Error
 	if err != nil {
 		return &types.ActivitiesResponse{}, err
