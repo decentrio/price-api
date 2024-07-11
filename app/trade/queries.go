@@ -91,7 +91,7 @@ func (k Keeper) TradingVolumePerWeek(ctx context.Context, request *types.Trading
 	}
 
 	// calculate volume in week
-	tradingVolumes := make(map[*types.Week]*types.TradeVolumeByWeek)
+	tradingVolumes := make(map[string]*types.TradeVolumeByWeek)
 
 	for _, trade := range trades {
 		year, week := time.Unix(int64(trade.TradeTimestamp), 0).ISOWeek()
@@ -101,11 +101,11 @@ func (k Keeper) TradingVolumePerWeek(ctx context.Context, request *types.Trading
 			Week: uint32(week),
 		}
 
-		tradingVolume, found := tradingVolumes[tradingWeek]
+		tradingVolume, found := tradingVolumes[tradingWeek.ToString()]
 		if found {
 			tradingVolume.TokenAVolume += trade.BaseVolume
 			tradingVolume.TokenBVolume += trade.TargetVolume
-			tradingVolumes[tradingWeek] = tradingVolume
+			tradingVolumes[tradingWeek.ToString()] = tradingVolume
 		} else {
 			tradingVolume := &types.TradeVolumeByWeek{
 				Week:         tradingWeek,
@@ -113,7 +113,7 @@ func (k Keeper) TradingVolumePerWeek(ctx context.Context, request *types.Trading
 				TokenBVolume: trade.TargetVolume,
 			}
 
-			tradingVolumes[tradingWeek] = tradingVolume
+			tradingVolumes[tradingWeek.ToString()] = tradingVolume
 		}
 
 	}
@@ -145,7 +145,7 @@ func (k Keeper) TradingVolumePerMonth(ctx context.Context, request *types.Tradin
 	}
 
 	// calculate volume in month
-	tradingVolumes := make(map[*types.Month]*types.TradeVolumeByMonth)
+	tradingVolumes := make(map[string]*types.TradeVolumeByMonth)
 
 	for _, trade := range trades {
 		year := time.Unix(int64(trade.TradeTimestamp), 0).Year()
@@ -156,11 +156,11 @@ func (k Keeper) TradingVolumePerMonth(ctx context.Context, request *types.Tradin
 			Month: uint32(month),
 		}
 
-		tradingVolume, found := tradingVolumes[tradingMonth]
+		tradingVolume, found := tradingVolumes[tradingMonth.ToString()]
 		if found {
 			tradingVolume.TokenAVolume += trade.BaseVolume
 			tradingVolume.TokenBVolume += trade.TargetVolume
-			tradingVolumes[tradingMonth] = tradingVolume
+			tradingVolumes[tradingMonth.ToString()] = tradingVolume
 		} else {
 			tradingVolume := &types.TradeVolumeByMonth{
 				Month:        tradingMonth,
@@ -168,7 +168,7 @@ func (k Keeper) TradingVolumePerMonth(ctx context.Context, request *types.Tradin
 				TokenBVolume: trade.TargetVolume,
 			}
 
-			tradingVolumes[tradingMonth] = tradingVolume
+			tradingVolumes[tradingMonth.ToString()] = tradingVolume
 		}
 
 	}
@@ -200,7 +200,7 @@ func (k Keeper) TradingVolumePerDay(ctx context.Context, request *types.TradingV
 	}
 
 	// calculate volume in month
-	tradingVolumes := make(map[*types.Date]*types.TradeVolumeByDate)
+	tradingVolumes := make(map[string]*types.TradeVolumeByDate)
 
 	for _, trade := range trades {
 		year, month, day := time.Unix(int64(trade.TradeTimestamp), 0).Date()
@@ -211,11 +211,11 @@ func (k Keeper) TradingVolumePerDay(ctx context.Context, request *types.TradingV
 			Day:   uint32(day),
 		}
 
-		tradingVolume, found := tradingVolumes[tradingDay]
+		tradingVolume, found := tradingVolumes[tradingDay.ToString()]
 		if found {
 			tradingVolume.TokenAVolume += trade.BaseVolume
 			tradingVolume.TokenBVolume += trade.TargetVolume
-			tradingVolumes[tradingDay] = tradingVolume
+			tradingVolumes[tradingDay.ToString()] = tradingVolume
 		} else {
 			tradingVolume := &types.TradeVolumeByDate{
 				Date:         tradingDay,
@@ -223,7 +223,7 @@ func (k Keeper) TradingVolumePerDay(ctx context.Context, request *types.TradingV
 				TokenBVolume: trade.TargetVolume,
 			}
 
-			tradingVolumes[tradingDay] = tradingVolume
+			tradingVolumes[tradingDay.ToString()] = tradingVolume
 		}
 
 	}
@@ -255,7 +255,7 @@ func (k Keeper) TradingVolumePerHour(ctx context.Context, request *types.Trading
 	}
 
 	// calculate volume in hour
-	tradingVolumes := make(map[*types.TimeHour]*types.TradeVolumeByHour)
+	tradingVolumes := make(map[string]*types.TradeVolumeByHour)
 
 	for _, trade := range trades {
 		year, month, day := time.Unix(int64(trade.TradeTimestamp), 0).Date()
@@ -270,11 +270,11 @@ func (k Keeper) TradingVolumePerHour(ctx context.Context, request *types.Trading
 			},
 		}
 
-		tradingVolume, found := tradingVolumes[tradingHour]
+		tradingVolume, found := tradingVolumes[tradingHour.ToString()]
 		if found {
 			tradingVolume.TokenAVolume += trade.BaseVolume
 			tradingVolume.TokenBVolume += trade.TargetVolume
-			tradingVolumes[tradingHour] = tradingVolume
+			tradingVolumes[tradingHour.ToString()] = tradingVolume
 		} else {
 			tradingVolume := &types.TradeVolumeByHour{
 				Time:         tradingHour,
@@ -282,7 +282,7 @@ func (k Keeper) TradingVolumePerHour(ctx context.Context, request *types.Trading
 				TokenBVolume: trade.TargetVolume,
 			}
 
-			tradingVolumes[tradingHour] = tradingVolume
+			tradingVolumes[tradingHour.ToString()] = tradingVolume
 		}
 
 	}
