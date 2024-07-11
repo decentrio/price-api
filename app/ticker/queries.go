@@ -2,7 +2,6 @@ package ticker
 
 import (
 	"context"
-	"fmt"
 
 	app "github.com/decentrio/price-api/app"
 	types "github.com/decentrio/price-api/types/ticker"
@@ -67,8 +66,6 @@ func (k Keeper) PoolReserveA(ctx context.Context, request *types.PoolReserveAReq
 
 	// get liquidity
 	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
-
-	fmt.Println("================", ticker.BaseLiquidity)
 
 	return &types.PoolReserveAResponse{
 		Amount: float64(ticker.BaseLiquidity) / 10000000.0,
