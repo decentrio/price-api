@@ -6,4 +6,20 @@ import "user/user.proto";
 
 option go_package = "github.com/decentrio/price-api/types/user";
 
-service UserQuery {}
+service UserQuery {
+    rpc Activities(ActivitiesRequest) returns (ActivitiesResponse) {
+        option (google.api.http).get = "/activities/{address}";
+      }
+}
+
+message ActivitiesRequest {
+    string address = 1;
+    uint64 from = 2;
+    uint64 to = 3;
+    int32 page = 4;
+    int32 page_size = 5;
+}
+
+message ActivitiesResponse {
+    repeated Activity activities = 1;
+}

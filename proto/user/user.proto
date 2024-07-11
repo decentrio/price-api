@@ -2,3 +2,23 @@ syntax = "proto3";
 package user;
 
 option go_package = "github.com/decentrio/price-api/types/user";
+
+message ActivityInfo {
+    string user = 1;
+    string action_type = 2;
+    string base_currency = 3;
+    uint64 base_volume = 4;
+    string target_currency = 5;
+    uint64 target_volume = 6;
+    uint64 time_stamp = 7;
+}
+
+message Activity {
+    string user = 1;
+    string action_type = 2;
+    string base_currency = 3;
+    double base_volume = 4;
+    string target_currency = 5;
+    double target_volume = 6;
+    uint64 time_stamp = 7;
+}
