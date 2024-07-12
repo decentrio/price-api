@@ -19,6 +19,7 @@ import (
 
 	"github.com/decentrio/price-api/app/ticker"
 	"github.com/decentrio/price-api/app/trade"
+	"github.com/decentrio/price-api/app/user"
 	tickertypes "github.com/decentrio/price-api/types/ticker"
 	tradetypes "github.com/decentrio/price-api/types/trade"
 )
@@ -28,10 +29,12 @@ func initModule() []app.AppModule {
 
 	tickerKeeper := ticker.NewKeeper(dbHandler)
 	tradeKeeper := trade.NewKeeper(dbHandler)
+	userKeeper := user.NewKeeper(dbHandler)
 
 	modules := []app.AppModule{
 		ticker.NewAppModule(*tickerKeeper),
 		trade.NewAppModule(*tradeKeeper),
+		user.NewAppModule(*userKeeper),
 	}
 
 	return modules

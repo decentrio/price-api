@@ -1,14 +1,14 @@
-package trade
+package user
 
 import (
 	"gorm.io/gorm"
 
-	types "github.com/decentrio/price-api/types/trade"
+	types "github.com/decentrio/price-api/types/user"
 )
 
 type Keeper struct {
 	dbHandler *gorm.DB
-	types.UnimplementedTradeQueryServer
+	types.UnimplementedUserQueryServer
 }
 
 func NewKeeper(db *gorm.DB) *Keeper {

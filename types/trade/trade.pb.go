@@ -226,20 +226,17 @@ func (x *TradeInfo) GetTickerId() string {
 	return ""
 }
 
-type TradesRequest struct {
+type Week struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TickerId  string `protobuf:"bytes,1,opt,name=ticker_id,json=tickerId,proto3" json:"ticker_id,omitempty"`
-	Type      string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
-	Limit     uint32 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
-	StartTime uint64 `protobuf:"varint,4,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
-	EndTime   uint64 `protobuf:"varint,5,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
+	Year uint32 `protobuf:"varint,1,opt,name=year,proto3" json:"year,omitempty"`
+	Week uint32 `protobuf:"varint,2,opt,name=week,proto3" json:"week,omitempty"`
 }
 
-func (x *TradesRequest) Reset() {
-	*x = TradesRequest{}
+func (x *Week) Reset() {
+	*x = Week{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_trade_trade_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -247,13 +244,13 @@ func (x *TradesRequest) Reset() {
 	}
 }
 
-func (x *TradesRequest) String() string {
+func (x *Week) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TradesRequest) ProtoMessage() {}
+func (*Week) ProtoMessage() {}
 
-func (x *TradesRequest) ProtoReflect() protoreflect.Message {
+func (x *Week) ProtoReflect() protoreflect.Message {
 	mi := &file_trade_trade_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -265,56 +262,37 @@ func (x *TradesRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TradesRequest.ProtoReflect.Descriptor instead.
-func (*TradesRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use Week.ProtoReflect.Descriptor instead.
+func (*Week) Descriptor() ([]byte, []int) {
 	return file_trade_trade_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *TradesRequest) GetTickerId() string {
+func (x *Week) GetYear() uint32 {
 	if x != nil {
-		return x.TickerId
-	}
-	return ""
-}
-
-func (x *TradesRequest) GetType() string {
-	if x != nil {
-		return x.Type
-	}
-	return ""
-}
-
-func (x *TradesRequest) GetLimit() uint32 {
-	if x != nil {
-		return x.Limit
+		return x.Year
 	}
 	return 0
 }
 
-func (x *TradesRequest) GetStartTime() uint64 {
+func (x *Week) GetWeek() uint32 {
 	if x != nil {
-		return x.StartTime
+		return x.Week
 	}
 	return 0
 }
 
-func (x *TradesRequest) GetEndTime() uint64 {
-	if x != nil {
-		return x.EndTime
-	}
-	return 0
-}
-
-type TradesResponse struct {
+type TradeVolumeByWeek struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Trades []*TradeInfo `protobuf:"bytes,1,rep,name=trades,proto3" json:"trades,omitempty"`
+	Week         *Week  `protobuf:"bytes,1,opt,name=week,proto3" json:"week,omitempty"`
+	TokenAVolume uint64 `protobuf:"varint,2,opt,name=token_a_volume,json=tokenAVolume,proto3" json:"token_a_volume,omitempty"`
+	TokenBVolume uint64 `protobuf:"varint,3,opt,name=token_b_volume,json=tokenBVolume,proto3" json:"token_b_volume,omitempty"`
 }
 
-func (x *TradesResponse) Reset() {
-	*x = TradesResponse{}
+func (x *TradeVolumeByWeek) Reset() {
+	*x = TradeVolumeByWeek{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_trade_trade_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -322,13 +300,13 @@ func (x *TradesResponse) Reset() {
 	}
 }
 
-func (x *TradesResponse) String() string {
+func (x *TradeVolumeByWeek) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TradesResponse) ProtoMessage() {}
+func (*TradeVolumeByWeek) ProtoMessage() {}
 
-func (x *TradesResponse) ProtoReflect() protoreflect.Message {
+func (x *TradeVolumeByWeek) ProtoReflect() protoreflect.Message {
 	mi := &file_trade_trade_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -340,16 +318,447 @@ func (x *TradesResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TradesResponse.ProtoReflect.Descriptor instead.
-func (*TradesResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use TradeVolumeByWeek.ProtoReflect.Descriptor instead.
+func (*TradeVolumeByWeek) Descriptor() ([]byte, []int) {
 	return file_trade_trade_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *TradesResponse) GetTrades() []*TradeInfo {
+func (x *TradeVolumeByWeek) GetWeek() *Week {
 	if x != nil {
-		return x.Trades
+		return x.Week
 	}
 	return nil
+}
+
+func (x *TradeVolumeByWeek) GetTokenAVolume() uint64 {
+	if x != nil {
+		return x.TokenAVolume
+	}
+	return 0
+}
+
+func (x *TradeVolumeByWeek) GetTokenBVolume() uint64 {
+	if x != nil {
+		return x.TokenBVolume
+	}
+	return 0
+}
+
+type Month struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Year  uint32 `protobuf:"varint,1,opt,name=year,proto3" json:"year,omitempty"`
+	Month uint32 `protobuf:"varint,2,opt,name=month,proto3" json:"month,omitempty"`
+}
+
+func (x *Month) Reset() {
+	*x = Month{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_trade_trade_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Month) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Month) ProtoMessage() {}
+
+func (x *Month) ProtoReflect() protoreflect.Message {
+	mi := &file_trade_trade_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Month.ProtoReflect.Descriptor instead.
+func (*Month) Descriptor() ([]byte, []int) {
+	return file_trade_trade_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *Month) GetYear() uint32 {
+	if x != nil {
+		return x.Year
+	}
+	return 0
+}
+
+func (x *Month) GetMonth() uint32 {
+	if x != nil {
+		return x.Month
+	}
+	return 0
+}
+
+type TradeVolumeByMonth struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Month        *Month `protobuf:"bytes,1,opt,name=month,proto3" json:"month,omitempty"`
+	TokenAVolume uint64 `protobuf:"varint,2,opt,name=token_a_volume,json=tokenAVolume,proto3" json:"token_a_volume,omitempty"`
+	TokenBVolume uint64 `protobuf:"varint,3,opt,name=token_b_volume,json=tokenBVolume,proto3" json:"token_b_volume,omitempty"`
+}
+
+func (x *TradeVolumeByMonth) Reset() {
+	*x = TradeVolumeByMonth{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_trade_trade_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TradeVolumeByMonth) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TradeVolumeByMonth) ProtoMessage() {}
+
+func (x *TradeVolumeByMonth) ProtoReflect() protoreflect.Message {
+	mi := &file_trade_trade_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TradeVolumeByMonth.ProtoReflect.Descriptor instead.
+func (*TradeVolumeByMonth) Descriptor() ([]byte, []int) {
+	return file_trade_trade_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *TradeVolumeByMonth) GetMonth() *Month {
+	if x != nil {
+		return x.Month
+	}
+	return nil
+}
+
+func (x *TradeVolumeByMonth) GetTokenAVolume() uint64 {
+	if x != nil {
+		return x.TokenAVolume
+	}
+	return 0
+}
+
+func (x *TradeVolumeByMonth) GetTokenBVolume() uint64 {
+	if x != nil {
+		return x.TokenBVolume
+	}
+	return 0
+}
+
+type Date struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Day   uint32 `protobuf:"varint,1,opt,name=day,proto3" json:"day,omitempty"`
+	Month uint32 `protobuf:"varint,2,opt,name=month,proto3" json:"month,omitempty"`
+	Year  uint32 `protobuf:"varint,3,opt,name=year,proto3" json:"year,omitempty"`
+}
+
+func (x *Date) Reset() {
+	*x = Date{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_trade_trade_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Date) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Date) ProtoMessage() {}
+
+func (x *Date) ProtoReflect() protoreflect.Message {
+	mi := &file_trade_trade_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Date.ProtoReflect.Descriptor instead.
+func (*Date) Descriptor() ([]byte, []int) {
+	return file_trade_trade_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *Date) GetDay() uint32 {
+	if x != nil {
+		return x.Day
+	}
+	return 0
+}
+
+func (x *Date) GetMonth() uint32 {
+	if x != nil {
+		return x.Month
+	}
+	return 0
+}
+
+func (x *Date) GetYear() uint32 {
+	if x != nil {
+		return x.Year
+	}
+	return 0
+}
+
+type TradeVolumeByDate struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Date         *Date  `protobuf:"bytes,1,opt,name=date,proto3" json:"date,omitempty"`
+	TokenAVolume uint64 `protobuf:"varint,2,opt,name=token_a_volume,json=tokenAVolume,proto3" json:"token_a_volume,omitempty"`
+	TokenBVolume uint64 `protobuf:"varint,3,opt,name=token_b_volume,json=tokenBVolume,proto3" json:"token_b_volume,omitempty"`
+}
+
+func (x *TradeVolumeByDate) Reset() {
+	*x = TradeVolumeByDate{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_trade_trade_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TradeVolumeByDate) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TradeVolumeByDate) ProtoMessage() {}
+
+func (x *TradeVolumeByDate) ProtoReflect() protoreflect.Message {
+	mi := &file_trade_trade_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TradeVolumeByDate.ProtoReflect.Descriptor instead.
+func (*TradeVolumeByDate) Descriptor() ([]byte, []int) {
+	return file_trade_trade_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *TradeVolumeByDate) GetDate() *Date {
+	if x != nil {
+		return x.Date
+	}
+	return nil
+}
+
+func (x *TradeVolumeByDate) GetTokenAVolume() uint64 {
+	if x != nil {
+		return x.TokenAVolume
+	}
+	return 0
+}
+
+func (x *TradeVolumeByDate) GetTokenBVolume() uint64 {
+	if x != nil {
+		return x.TokenBVolume
+	}
+	return 0
+}
+
+type TimeHour struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Hour uint32 `protobuf:"varint,1,opt,name=hour,proto3" json:"hour,omitempty"`
+	Date *Date  `protobuf:"bytes,2,opt,name=date,proto3" json:"date,omitempty"`
+}
+
+func (x *TimeHour) Reset() {
+	*x = TimeHour{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_trade_trade_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TimeHour) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TimeHour) ProtoMessage() {}
+
+func (x *TimeHour) ProtoReflect() protoreflect.Message {
+	mi := &file_trade_trade_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TimeHour.ProtoReflect.Descriptor instead.
+func (*TimeHour) Descriptor() ([]byte, []int) {
+	return file_trade_trade_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *TimeHour) GetHour() uint32 {
+	if x != nil {
+		return x.Hour
+	}
+	return 0
+}
+
+func (x *TimeHour) GetDate() *Date {
+	if x != nil {
+		return x.Date
+	}
+	return nil
+}
+
+type TradeVolumeByHour struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Time         *TimeHour `protobuf:"bytes,1,opt,name=time,proto3" json:"time,omitempty"`
+	TokenAVolume uint64    `protobuf:"varint,2,opt,name=token_a_volume,json=tokenAVolume,proto3" json:"token_a_volume,omitempty"`
+	TokenBVolume uint64    `protobuf:"varint,3,opt,name=token_b_volume,json=tokenBVolume,proto3" json:"token_b_volume,omitempty"`
+}
+
+func (x *TradeVolumeByHour) Reset() {
+	*x = TradeVolumeByHour{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_trade_trade_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TradeVolumeByHour) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TradeVolumeByHour) ProtoMessage() {}
+
+func (x *TradeVolumeByHour) ProtoReflect() protoreflect.Message {
+	mi := &file_trade_trade_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TradeVolumeByHour.ProtoReflect.Descriptor instead.
+func (*TradeVolumeByHour) Descriptor() ([]byte, []int) {
+	return file_trade_trade_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *TradeVolumeByHour) GetTime() *TimeHour {
+	if x != nil {
+		return x.Time
+	}
+	return nil
+}
+
+func (x *TradeVolumeByHour) GetTokenAVolume() uint64 {
+	if x != nil {
+		return x.TokenAVolume
+	}
+	return 0
+}
+
+func (x *TradeVolumeByHour) GetTokenBVolume() uint64 {
+	if x != nil {
+		return x.TokenBVolume
+	}
+	return 0
+}
+
+type PriceGraph struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TimeStamp uint64  `protobuf:"varint,1,opt,name=time_stamp,json=timeStamp,proto3" json:"time_stamp,omitempty"`
+	Price     float64 `protobuf:"fixed64,2,opt,name=price,proto3" json:"price,omitempty"`
+}
+
+func (x *PriceGraph) Reset() {
+	*x = PriceGraph{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_trade_trade_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PriceGraph) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PriceGraph) ProtoMessage() {}
+
+func (x *PriceGraph) ProtoReflect() protoreflect.Message {
+	mi := &file_trade_trade_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PriceGraph.ProtoReflect.Descriptor instead.
+func (*PriceGraph) Descriptor() ([]byte, []int) {
+	return file_trade_trade_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *PriceGraph) GetTimeStamp() uint64 {
+	if x != nil {
+		return x.TimeStamp
+	}
+	return 0
+}
+
+func (x *PriceGraph) GetPrice() float64 {
+	if x != nil {
+		return x.Price
+	}
+	return 0
 }
 
 var File_trade_trade_proto protoreflect.FileDescriptor
@@ -388,20 +797,59 @@ var file_trade_trade_proto_rawDesc = []byte{
 	0x70, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x74, 0x69, 0x63, 0x6b, 0x65, 0x72, 0x5f,
 	0x69, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x74, 0x69, 0x63, 0x6b, 0x65, 0x72,
-	0x5f, 0x69, 0x64, 0x22, 0x90, 0x01, 0x0a, 0x0d, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x74, 0x69, 0x63, 0x6b, 0x65, 0x72, 0x5f,
-	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x69, 0x63, 0x6b, 0x65, 0x72,
-	0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x1d, 0x0a, 0x0a,
-	0x73, 0x74, 0x61, 0x72, 0x74, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x04,
-	0x52, 0x09, 0x73, 0x74, 0x61, 0x72, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x65,
-	0x6e, 0x64, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x07, 0x65,
-	0x6e, 0x64, 0x54, 0x69, 0x6d, 0x65, 0x22, 0x3a, 0x0a, 0x0e, 0x54, 0x72, 0x61, 0x64, 0x65, 0x73,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x28, 0x0a, 0x06, 0x74, 0x72, 0x61, 0x64,
-	0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65,
-	0x2e, 0x54, 0x72, 0x61, 0x64, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x06, 0x74, 0x72, 0x61, 0x64,
-	0x65, 0x73, 0x42, 0x77, 0x0a, 0x09, 0x63, 0x6f, 0x6d, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x42,
+	0x5f, 0x69, 0x64, 0x22, 0x2e, 0x0a, 0x04, 0x57, 0x65, 0x65, 0x6b, 0x12, 0x12, 0x0a, 0x04, 0x79,
+	0x65, 0x61, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x04, 0x79, 0x65, 0x61, 0x72, 0x12,
+	0x12, 0x0a, 0x04, 0x77, 0x65, 0x65, 0x6b, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x04, 0x77,
+	0x65, 0x65, 0x6b, 0x22, 0x80, 0x01, 0x0a, 0x11, 0x54, 0x72, 0x61, 0x64, 0x65, 0x56, 0x6f, 0x6c,
+	0x75, 0x6d, 0x65, 0x42, 0x79, 0x57, 0x65, 0x65, 0x6b, 0x12, 0x1f, 0x0a, 0x04, 0x77, 0x65, 0x65,
+	0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x2e,
+	0x57, 0x65, 0x65, 0x6b, 0x52, 0x04, 0x77, 0x65, 0x65, 0x6b, 0x12, 0x24, 0x0a, 0x0e, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x5f, 0x61, 0x5f, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x04, 0x52, 0x0c, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65,
+	0x12, 0x24, 0x0a, 0x0e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x62, 0x5f, 0x76, 0x6f, 0x6c, 0x75,
+	0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0c, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x42,
+	0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x22, 0x31, 0x0a, 0x05, 0x4d, 0x6f, 0x6e, 0x74, 0x68, 0x12,
+	0x12, 0x0a, 0x04, 0x79, 0x65, 0x61, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x04, 0x79,
+	0x65, 0x61, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x6d, 0x6f, 0x6e, 0x74, 0x68, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0d, 0x52, 0x05, 0x6d, 0x6f, 0x6e, 0x74, 0x68, 0x22, 0x84, 0x01, 0x0a, 0x12, 0x54, 0x72,
+	0x61, 0x64, 0x65, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x42, 0x79, 0x4d, 0x6f, 0x6e, 0x74, 0x68,
+	0x12, 0x22, 0x0a, 0x05, 0x6d, 0x6f, 0x6e, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x0c, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x2e, 0x4d, 0x6f, 0x6e, 0x74, 0x68, 0x52, 0x05, 0x6d,
+	0x6f, 0x6e, 0x74, 0x68, 0x12, 0x24, 0x0a, 0x0e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x61, 0x5f,
+	0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0c, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x41, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x12, 0x24, 0x0a, 0x0e, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x5f, 0x62, 0x5f, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x04, 0x52, 0x0c, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x42, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65,
+	0x22, 0x42, 0x0a, 0x04, 0x44, 0x61, 0x74, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x61, 0x79, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x03, 0x64, 0x61, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x6d, 0x6f,
+	0x6e, 0x74, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x6d, 0x6f, 0x6e, 0x74, 0x68,
+	0x12, 0x12, 0x0a, 0x04, 0x79, 0x65, 0x61, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x04,
+	0x79, 0x65, 0x61, 0x72, 0x22, 0x80, 0x01, 0x0a, 0x11, 0x54, 0x72, 0x61, 0x64, 0x65, 0x56, 0x6f,
+	0x6c, 0x75, 0x6d, 0x65, 0x42, 0x79, 0x44, 0x61, 0x74, 0x65, 0x12, 0x1f, 0x0a, 0x04, 0x64, 0x61,
+	0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65,
+	0x2e, 0x44, 0x61, 0x74, 0x65, 0x52, 0x04, 0x64, 0x61, 0x74, 0x65, 0x12, 0x24, 0x0a, 0x0e, 0x74,
+	0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x61, 0x5f, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x0c, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x41, 0x56, 0x6f, 0x6c, 0x75, 0x6d,
+	0x65, 0x12, 0x24, 0x0a, 0x0e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x62, 0x5f, 0x76, 0x6f, 0x6c,
+	0x75, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0c, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x42, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x22, 0x3f, 0x0a, 0x08, 0x54, 0x69, 0x6d, 0x65, 0x48,
+	0x6f, 0x75, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x68, 0x6f, 0x75, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0d, 0x52, 0x04, 0x68, 0x6f, 0x75, 0x72, 0x12, 0x1f, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x2e, 0x44, 0x61,
+	0x74, 0x65, 0x52, 0x04, 0x64, 0x61, 0x74, 0x65, 0x22, 0x84, 0x01, 0x0a, 0x11, 0x54, 0x72, 0x61,
+	0x64, 0x65, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x42, 0x79, 0x48, 0x6f, 0x75, 0x72, 0x12, 0x23,
+	0x0a, 0x04, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x74,
+	0x72, 0x61, 0x64, 0x65, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x48, 0x6f, 0x75, 0x72, 0x52, 0x04, 0x74,
+	0x69, 0x6d, 0x65, 0x12, 0x24, 0x0a, 0x0e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x61, 0x5f, 0x76,
+	0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0c, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x41, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x12, 0x24, 0x0a, 0x0e, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x5f, 0x62, 0x5f, 0x76, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x04, 0x52, 0x0c, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x42, 0x56, 0x6f, 0x6c, 0x75, 0x6d, 0x65, 0x22,
+	0x41, 0x0a, 0x0a, 0x50, 0x72, 0x69, 0x63, 0x65, 0x47, 0x72, 0x61, 0x70, 0x68, 0x12, 0x1d, 0x0a,
+	0x0a, 0x74, 0x69, 0x6d, 0x65, 0x5f, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x04, 0x52, 0x09, 0x74, 0x69, 0x6d, 0x65, 0x53, 0x74, 0x61, 0x6d, 0x70, 0x12, 0x14, 0x0a, 0x05,
+	0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x01, 0x52, 0x05, 0x70, 0x72, 0x69,
+	0x63, 0x65, 0x42, 0x77, 0x0a, 0x09, 0x63, 0x6f, 0x6d, 0x2e, 0x74, 0x72, 0x61, 0x64, 0x65, 0x42,
 	0x0a, 0x54, 0x72, 0x61, 0x64, 0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2a, 0x67,
 	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x64, 0x65, 0x63, 0x65, 0x6e, 0x74,
 	0x72, 0x69, 0x6f, 0x2f, 0x70, 0x72, 0x69, 0x63, 0x65, 0x2d, 0x61, 0x70, 0x69, 0x2f, 0x74, 0x79,
@@ -424,20 +872,31 @@ func file_trade_trade_proto_rawDescGZIP() []byte {
 	return file_trade_trade_proto_rawDescData
 }
 
-var file_trade_trade_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_trade_trade_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_trade_trade_proto_goTypes = []any{
-	(*Trade)(nil),          // 0: trade.Trade
-	(*TradeInfo)(nil),      // 1: trade.TradeInfo
-	(*TradesRequest)(nil),  // 2: trade.TradesRequest
-	(*TradesResponse)(nil), // 3: trade.TradesResponse
+	(*Trade)(nil),              // 0: trade.Trade
+	(*TradeInfo)(nil),          // 1: trade.TradeInfo
+	(*Week)(nil),               // 2: trade.Week
+	(*TradeVolumeByWeek)(nil),  // 3: trade.TradeVolumeByWeek
+	(*Month)(nil),              // 4: trade.Month
+	(*TradeVolumeByMonth)(nil), // 5: trade.TradeVolumeByMonth
+	(*Date)(nil),               // 6: trade.Date
+	(*TradeVolumeByDate)(nil),  // 7: trade.TradeVolumeByDate
+	(*TimeHour)(nil),           // 8: trade.TimeHour
+	(*TradeVolumeByHour)(nil),  // 9: trade.TradeVolumeByHour
+	(*PriceGraph)(nil),         // 10: trade.PriceGraph
 }
 var file_trade_trade_proto_depIdxs = []int32{
-	1, // 0: trade.TradesResponse.trades:type_name -> trade.TradeInfo
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: trade.TradeVolumeByWeek.week:type_name -> trade.Week
+	4, // 1: trade.TradeVolumeByMonth.month:type_name -> trade.Month
+	6, // 2: trade.TradeVolumeByDate.date:type_name -> trade.Date
+	6, // 3: trade.TimeHour.date:type_name -> trade.Date
+	8, // 4: trade.TradeVolumeByHour.time:type_name -> trade.TimeHour
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_trade_trade_proto_init() }
@@ -471,7 +930,7 @@ func file_trade_trade_proto_init() {
 			}
 		}
 		file_trade_trade_proto_msgTypes[2].Exporter = func(v any, i int) any {
-			switch v := v.(*TradesRequest); i {
+			switch v := v.(*Week); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -483,7 +942,91 @@ func file_trade_trade_proto_init() {
 			}
 		}
 		file_trade_trade_proto_msgTypes[3].Exporter = func(v any, i int) any {
-			switch v := v.(*TradesResponse); i {
+			switch v := v.(*TradeVolumeByWeek); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_trade_trade_proto_msgTypes[4].Exporter = func(v any, i int) any {
+			switch v := v.(*Month); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_trade_trade_proto_msgTypes[5].Exporter = func(v any, i int) any {
+			switch v := v.(*TradeVolumeByMonth); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_trade_trade_proto_msgTypes[6].Exporter = func(v any, i int) any {
+			switch v := v.(*Date); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_trade_trade_proto_msgTypes[7].Exporter = func(v any, i int) any {
+			switch v := v.(*TradeVolumeByDate); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_trade_trade_proto_msgTypes[8].Exporter = func(v any, i int) any {
+			switch v := v.(*TimeHour); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_trade_trade_proto_msgTypes[9].Exporter = func(v any, i int) any {
+			switch v := v.(*TradeVolumeByHour); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_trade_trade_proto_msgTypes[10].Exporter = func(v any, i int) any {
+			switch v := v.(*PriceGraph); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -501,7 +1044,7 @@ func file_trade_trade_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_trade_trade_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

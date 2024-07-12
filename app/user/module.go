@@ -1,17 +1,8 @@
-package trade
+package user
 
 import (
-	"time"
-
-	types "github.com/decentrio/price-api/types/trade"
+	types "github.com/decentrio/price-api/types/user"
 	"google.golang.org/grpc"
-)
-
-const (
-	Day   = time.Hour * 24
-	Week  = Day * 7
-	Month = Day * 30
-	Year  = Day * 365
 )
 
 type AppModule struct {
@@ -27,5 +18,5 @@ func NewAppModule(
 }
 
 func (am AppModule) RegisterServices(server *grpc.Server) {
-	types.RegisterTradeQueryServer(server, am.keeper)
+	types.RegisterUserQueryServer(server, am.keeper)
 }

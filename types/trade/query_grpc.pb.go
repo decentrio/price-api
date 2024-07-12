@@ -19,7 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	TradeQuery_Trades_FullMethodName = "/trade.TradeQuery/Trades"
+	TradeQuery_Trades_FullMethodName                    = "/trade.TradeQuery/Trades"
+	TradeQuery_TradingVolumePerWeek_FullMethodName      = "/trade.TradeQuery/TradingVolumePerWeek"
+	TradeQuery_TradingVolumePerMonth_FullMethodName     = "/trade.TradeQuery/TradingVolumePerMonth"
+	TradeQuery_TradingVolumePerDay_FullMethodName       = "/trade.TradeQuery/TradingVolumePerDay"
+	TradeQuery_TradingVolumePerHour_FullMethodName      = "/trade.TradeQuery/TradingVolumePerHour"
+	TradeQuery_PriceGraph_FullMethodName                = "/trade.TradeQuery/PriceGraph"
+	TradeQuery_PriceGraphLastWeek_FullMethodName        = "/trade.TradeQuery/PriceGraphLastWeek"
+	TradeQuery_PriceGraphLastMonth_FullMethodName       = "/trade.TradeQuery/PriceGraphLastMonth"
+	TradeQuery_PriceGraphLastYear_FullMethodName        = "/trade.TradeQuery/PriceGraphLastYear"
+	TradeQuery_TradeHistoricals_FullMethodName          = "/trade.TradeQuery/TradeHistoricals"
+	TradeQuery_LastWeekTradeHistoricals_FullMethodName  = "/trade.TradeQuery/LastWeekTradeHistoricals"
+	TradeQuery_LastMonthTradeHistoricals_FullMethodName = "/trade.TradeQuery/LastMonthTradeHistoricals"
+	TradeQuery_LastYearTradeHistoricals_FullMethodName  = "/trade.TradeQuery/LastYearTradeHistoricals"
 )
 
 // TradeQueryClient is the client API for TradeQuery service.
@@ -28,6 +40,18 @@ const (
 type TradeQueryClient interface {
 	// Trades is used to return data on historical completed trades for a given market pair.
 	Trades(ctx context.Context, in *TradesRequest, opts ...grpc.CallOption) (*TradesResponse, error)
+	TradingVolumePerWeek(ctx context.Context, in *TradingVolumePerWeekRequest, opts ...grpc.CallOption) (*TradingVolumePerWeekResponse, error)
+	TradingVolumePerMonth(ctx context.Context, in *TradingVolumePerMonthRequest, opts ...grpc.CallOption) (*TradingVolumePerMonthResponse, error)
+	TradingVolumePerDay(ctx context.Context, in *TradingVolumePerDayRequest, opts ...grpc.CallOption) (*TradingVolumePerDayResponse, error)
+	TradingVolumePerHour(ctx context.Context, in *TradingVolumePerHourRequest, opts ...grpc.CallOption) (*TradingVolumePerHourResponse, error)
+	PriceGraph(ctx context.Context, in *PriceGraphRequest, opts ...grpc.CallOption) (*PriceGraphResponse, error)
+	PriceGraphLastWeek(ctx context.Context, in *PriceGraphLastWeekRequest, opts ...grpc.CallOption) (*PriceGraphLastWeekResponse, error)
+	PriceGraphLastMonth(ctx context.Context, in *PriceGraphLastMonthRequest, opts ...grpc.CallOption) (*PriceGraphLastMonthResponse, error)
+	PriceGraphLastYear(ctx context.Context, in *PriceGraphLastYearRequest, opts ...grpc.CallOption) (*PriceGraphLastYearResponse, error)
+	TradeHistoricals(ctx context.Context, in *TradeHistoricalRequest, opts ...grpc.CallOption) (*TradeHistoricalResponse, error)
+	LastWeekTradeHistoricals(ctx context.Context, in *LastWeekTradeHistoricalRequest, opts ...grpc.CallOption) (*LastWeekTradeHistoricalResponse, error)
+	LastMonthTradeHistoricals(ctx context.Context, in *LastMonthTradeHistoricalRequest, opts ...grpc.CallOption) (*LastMonthTradeHistoricalResponse, error)
+	LastYearTradeHistoricals(ctx context.Context, in *LastYearTradeHistoricalRequest, opts ...grpc.CallOption) (*LastYearTradeHistoricalResponse, error)
 }
 
 type tradeQueryClient struct {
@@ -48,12 +72,144 @@ func (c *tradeQueryClient) Trades(ctx context.Context, in *TradesRequest, opts .
 	return out, nil
 }
 
+func (c *tradeQueryClient) TradingVolumePerWeek(ctx context.Context, in *TradingVolumePerWeekRequest, opts ...grpc.CallOption) (*TradingVolumePerWeekResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TradingVolumePerWeekResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_TradingVolumePerWeek_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) TradingVolumePerMonth(ctx context.Context, in *TradingVolumePerMonthRequest, opts ...grpc.CallOption) (*TradingVolumePerMonthResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TradingVolumePerMonthResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_TradingVolumePerMonth_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) TradingVolumePerDay(ctx context.Context, in *TradingVolumePerDayRequest, opts ...grpc.CallOption) (*TradingVolumePerDayResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TradingVolumePerDayResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_TradingVolumePerDay_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) TradingVolumePerHour(ctx context.Context, in *TradingVolumePerHourRequest, opts ...grpc.CallOption) (*TradingVolumePerHourResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TradingVolumePerHourResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_TradingVolumePerHour_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) PriceGraph(ctx context.Context, in *PriceGraphRequest, opts ...grpc.CallOption) (*PriceGraphResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PriceGraphResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_PriceGraph_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) PriceGraphLastWeek(ctx context.Context, in *PriceGraphLastWeekRequest, opts ...grpc.CallOption) (*PriceGraphLastWeekResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PriceGraphLastWeekResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_PriceGraphLastWeek_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) PriceGraphLastMonth(ctx context.Context, in *PriceGraphLastMonthRequest, opts ...grpc.CallOption) (*PriceGraphLastMonthResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PriceGraphLastMonthResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_PriceGraphLastMonth_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) PriceGraphLastYear(ctx context.Context, in *PriceGraphLastYearRequest, opts ...grpc.CallOption) (*PriceGraphLastYearResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PriceGraphLastYearResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_PriceGraphLastYear_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) TradeHistoricals(ctx context.Context, in *TradeHistoricalRequest, opts ...grpc.CallOption) (*TradeHistoricalResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TradeHistoricalResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_TradeHistoricals_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) LastWeekTradeHistoricals(ctx context.Context, in *LastWeekTradeHistoricalRequest, opts ...grpc.CallOption) (*LastWeekTradeHistoricalResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LastWeekTradeHistoricalResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_LastWeekTradeHistoricals_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) LastMonthTradeHistoricals(ctx context.Context, in *LastMonthTradeHistoricalRequest, opts ...grpc.CallOption) (*LastMonthTradeHistoricalResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LastMonthTradeHistoricalResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_LastMonthTradeHistoricals_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) LastYearTradeHistoricals(ctx context.Context, in *LastYearTradeHistoricalRequest, opts ...grpc.CallOption) (*LastYearTradeHistoricalResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LastYearTradeHistoricalResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_LastYearTradeHistoricals_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TradeQueryServer is the server API for TradeQuery service.
 // All implementations must embed UnimplementedTradeQueryServer
 // for forward compatibility
 type TradeQueryServer interface {
 	// Trades is used to return data on historical completed trades for a given market pair.
 	Trades(context.Context, *TradesRequest) (*TradesResponse, error)
+	TradingVolumePerWeek(context.Context, *TradingVolumePerWeekRequest) (*TradingVolumePerWeekResponse, error)
+	TradingVolumePerMonth(context.Context, *TradingVolumePerMonthRequest) (*TradingVolumePerMonthResponse, error)
+	TradingVolumePerDay(context.Context, *TradingVolumePerDayRequest) (*TradingVolumePerDayResponse, error)
+	TradingVolumePerHour(context.Context, *TradingVolumePerHourRequest) (*TradingVolumePerHourResponse, error)
+	PriceGraph(context.Context, *PriceGraphRequest) (*PriceGraphResponse, error)
+	PriceGraphLastWeek(context.Context, *PriceGraphLastWeekRequest) (*PriceGraphLastWeekResponse, error)
+	PriceGraphLastMonth(context.Context, *PriceGraphLastMonthRequest) (*PriceGraphLastMonthResponse, error)
+	PriceGraphLastYear(context.Context, *PriceGraphLastYearRequest) (*PriceGraphLastYearResponse, error)
+	TradeHistoricals(context.Context, *TradeHistoricalRequest) (*TradeHistoricalResponse, error)
+	LastWeekTradeHistoricals(context.Context, *LastWeekTradeHistoricalRequest) (*LastWeekTradeHistoricalResponse, error)
+	LastMonthTradeHistoricals(context.Context, *LastMonthTradeHistoricalRequest) (*LastMonthTradeHistoricalResponse, error)
+	LastYearTradeHistoricals(context.Context, *LastYearTradeHistoricalRequest) (*LastYearTradeHistoricalResponse, error)
 	mustEmbedUnimplementedTradeQueryServer()
 }
 
@@ -63,6 +219,42 @@ type UnimplementedTradeQueryServer struct {
 
 func (UnimplementedTradeQueryServer) Trades(context.Context, *TradesRequest) (*TradesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Trades not implemented")
+}
+func (UnimplementedTradeQueryServer) TradingVolumePerWeek(context.Context, *TradingVolumePerWeekRequest) (*TradingVolumePerWeekResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TradingVolumePerWeek not implemented")
+}
+func (UnimplementedTradeQueryServer) TradingVolumePerMonth(context.Context, *TradingVolumePerMonthRequest) (*TradingVolumePerMonthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TradingVolumePerMonth not implemented")
+}
+func (UnimplementedTradeQueryServer) TradingVolumePerDay(context.Context, *TradingVolumePerDayRequest) (*TradingVolumePerDayResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TradingVolumePerDay not implemented")
+}
+func (UnimplementedTradeQueryServer) TradingVolumePerHour(context.Context, *TradingVolumePerHourRequest) (*TradingVolumePerHourResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TradingVolumePerHour not implemented")
+}
+func (UnimplementedTradeQueryServer) PriceGraph(context.Context, *PriceGraphRequest) (*PriceGraphResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PriceGraph not implemented")
+}
+func (UnimplementedTradeQueryServer) PriceGraphLastWeek(context.Context, *PriceGraphLastWeekRequest) (*PriceGraphLastWeekResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PriceGraphLastWeek not implemented")
+}
+func (UnimplementedTradeQueryServer) PriceGraphLastMonth(context.Context, *PriceGraphLastMonthRequest) (*PriceGraphLastMonthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PriceGraphLastMonth not implemented")
+}
+func (UnimplementedTradeQueryServer) PriceGraphLastYear(context.Context, *PriceGraphLastYearRequest) (*PriceGraphLastYearResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PriceGraphLastYear not implemented")
+}
+func (UnimplementedTradeQueryServer) TradeHistoricals(context.Context, *TradeHistoricalRequest) (*TradeHistoricalResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TradeHistoricals not implemented")
+}
+func (UnimplementedTradeQueryServer) LastWeekTradeHistoricals(context.Context, *LastWeekTradeHistoricalRequest) (*LastWeekTradeHistoricalResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LastWeekTradeHistoricals not implemented")
+}
+func (UnimplementedTradeQueryServer) LastMonthTradeHistoricals(context.Context, *LastMonthTradeHistoricalRequest) (*LastMonthTradeHistoricalResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LastMonthTradeHistoricals not implemented")
+}
+func (UnimplementedTradeQueryServer) LastYearTradeHistoricals(context.Context, *LastYearTradeHistoricalRequest) (*LastYearTradeHistoricalResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LastYearTradeHistoricals not implemented")
 }
 func (UnimplementedTradeQueryServer) mustEmbedUnimplementedTradeQueryServer() {}
 
@@ -95,6 +287,222 @@ func _TradeQuery_Trades_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TradeQuery_TradingVolumePerWeek_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TradingVolumePerWeekRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).TradingVolumePerWeek(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_TradingVolumePerWeek_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).TradingVolumePerWeek(ctx, req.(*TradingVolumePerWeekRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_TradingVolumePerMonth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TradingVolumePerMonthRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).TradingVolumePerMonth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_TradingVolumePerMonth_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).TradingVolumePerMonth(ctx, req.(*TradingVolumePerMonthRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_TradingVolumePerDay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TradingVolumePerDayRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).TradingVolumePerDay(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_TradingVolumePerDay_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).TradingVolumePerDay(ctx, req.(*TradingVolumePerDayRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_TradingVolumePerHour_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TradingVolumePerHourRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).TradingVolumePerHour(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_TradingVolumePerHour_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).TradingVolumePerHour(ctx, req.(*TradingVolumePerHourRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_PriceGraph_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PriceGraphRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).PriceGraph(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_PriceGraph_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).PriceGraph(ctx, req.(*PriceGraphRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_PriceGraphLastWeek_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PriceGraphLastWeekRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).PriceGraphLastWeek(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_PriceGraphLastWeek_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).PriceGraphLastWeek(ctx, req.(*PriceGraphLastWeekRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_PriceGraphLastMonth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PriceGraphLastMonthRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).PriceGraphLastMonth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_PriceGraphLastMonth_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).PriceGraphLastMonth(ctx, req.(*PriceGraphLastMonthRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_PriceGraphLastYear_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PriceGraphLastYearRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).PriceGraphLastYear(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_PriceGraphLastYear_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).PriceGraphLastYear(ctx, req.(*PriceGraphLastYearRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_TradeHistoricals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TradeHistoricalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).TradeHistoricals(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_TradeHistoricals_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).TradeHistoricals(ctx, req.(*TradeHistoricalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_LastWeekTradeHistoricals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LastWeekTradeHistoricalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).LastWeekTradeHistoricals(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_LastWeekTradeHistoricals_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).LastWeekTradeHistoricals(ctx, req.(*LastWeekTradeHistoricalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_LastMonthTradeHistoricals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LastMonthTradeHistoricalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).LastMonthTradeHistoricals(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_LastMonthTradeHistoricals_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).LastMonthTradeHistoricals(ctx, req.(*LastMonthTradeHistoricalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_LastYearTradeHistoricals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LastYearTradeHistoricalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).LastYearTradeHistoricals(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_LastYearTradeHistoricals_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).LastYearTradeHistoricals(ctx, req.(*LastYearTradeHistoricalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TradeQuery_ServiceDesc is the grpc.ServiceDesc for TradeQuery service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -105,6 +513,54 @@ var TradeQuery_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Trades",
 			Handler:    _TradeQuery_Trades_Handler,
+		},
+		{
+			MethodName: "TradingVolumePerWeek",
+			Handler:    _TradeQuery_TradingVolumePerWeek_Handler,
+		},
+		{
+			MethodName: "TradingVolumePerMonth",
+			Handler:    _TradeQuery_TradingVolumePerMonth_Handler,
+		},
+		{
+			MethodName: "TradingVolumePerDay",
+			Handler:    _TradeQuery_TradingVolumePerDay_Handler,
+		},
+		{
+			MethodName: "TradingVolumePerHour",
+			Handler:    _TradeQuery_TradingVolumePerHour_Handler,
+		},
+		{
+			MethodName: "PriceGraph",
+			Handler:    _TradeQuery_PriceGraph_Handler,
+		},
+		{
+			MethodName: "PriceGraphLastWeek",
+			Handler:    _TradeQuery_PriceGraphLastWeek_Handler,
+		},
+		{
+			MethodName: "PriceGraphLastMonth",
+			Handler:    _TradeQuery_PriceGraphLastMonth_Handler,
+		},
+		{
+			MethodName: "PriceGraphLastYear",
+			Handler:    _TradeQuery_PriceGraphLastYear_Handler,
+		},
+		{
+			MethodName: "TradeHistoricals",
+			Handler:    _TradeQuery_TradeHistoricals_Handler,
+		},
+		{
+			MethodName: "LastWeekTradeHistoricals",
+			Handler:    _TradeQuery_LastWeekTradeHistoricals_Handler,
+		},
+		{
+			MethodName: "LastMonthTradeHistoricals",
+			Handler:    _TradeQuery_LastMonthTradeHistoricals_Handler,
+		},
+		{
+			MethodName: "LastYearTradeHistoricals",
+			Handler:    _TradeQuery_LastYearTradeHistoricals_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -25,12 +25,52 @@ message TradeInfo {
   string ticker_id = 7 [json_name="ticker_id"];
 }
 
-message TradesRequest {
-  string ticker_id = 1;
-  string type = 2;
-  uint32 limit = 3;
-  uint64 start_time = 4;
-  uint64 end_time = 5;
+message Week {
+  uint32 year = 1;
+  uint32 week = 2;
 }
 
-message TradesResponse { repeated TradeInfo trades = 1; }
+message TradeVolumeByWeek {
+  Week week = 1;
+  uint64 token_a_volume = 2;
+  uint64 token_b_volume = 3;
+}
+
+message Month {
+  uint32 year = 1;
+  uint32 month = 2;
+}
+
+message TradeVolumeByMonth {
+  Month month = 1;
+  uint64 token_a_volume = 2;
+  uint64 token_b_volume = 3;
+}
+
+message Date {
+  uint32 day = 1;
+  uint32 month = 2;
+  uint32 year = 3; 
+}
+
+message TradeVolumeByDate {
+  Date date = 1;
+  uint64 token_a_volume = 2;
+  uint64 token_b_volume = 3;
+}
+
+message TimeHour {
+  uint32 hour = 1;
+  Date date = 2;
+}
+
+message TradeVolumeByHour {
+  TimeHour time = 1;
+  uint64 token_a_volume = 2;
+  uint64 token_b_volume = 3;
+}
+
+message PriceGraph {
+  uint64 time_stamp = 1;
+  double price = 2;
+}
