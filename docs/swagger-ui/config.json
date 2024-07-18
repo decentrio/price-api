@@ -11,6 +11,9 @@
     },
     {
       "url": "./tmp-swagger-gen/trade/query.swagger.json"
+    },
+    {
+      "url": "./tmp-swagger-gen/user/query.swagger.json"
     }
   ]
 }

@@ -4,6 +4,155 @@ info:
   description: A REST interface for price and trade queries
   version: 1.0.0
 paths:
+  /liquidity/{contractId}/pool_reserve_a:
+    get:
+      operationId: PoolReserveA
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amount:
+                type: number
+                format: double
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          type: string
+      tags:
+        - TickerQuery
+  /liquidity/{contractId}/pool_reserve_b:
+    get:
+      operationId: PoolReserveB
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amount:
+                type: number
+                format: double
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          type: string
+      tags:
+        - TickerQuery
+  /liquidity/{contractId}/pool_shares:
+    get:
+      summary: Liquidity
+      operationId: PoolShare
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amount:
+                type: number
+                format: double
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          type: string
+      tags:
+        - TickerQuery
+  /liquidity/{contractId}/total_in_usd:
+    get:
+      operationId: PoolTotalLiquidityInUsd
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amount:
+                type: number
+                format: double
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          type: string
+      tags:
+        - TickerQuery
   /tickers:
     get:
       summary: Tickers provides 24-hour pricing and volume information.
@@ -25,13 +174,23 @@ paths:
                 pool_id:
                   type: string
                 last_price:
-                  type: string
+                  type: number
+                  format: double
                 base_volume:
-                  type: string
+                  type: number
+                  format: double
                 target_volume:
-                  type: string
+                  type: number
+                  format: double
+                high:
+                  type: number
+                  format: double
+                low:
+                  type: number
+                  format: double
                 liquidity_in_usd:
-                  type: string
+                  type: number
+                  format: double
         default:
           description: An unexpected error response.
           schema:
@@ -67,17 +226,23 @@ paths:
               type: object
               properties:
                 trade_id:
-                  type: string
+                  type: integer
+                  format: int64
                 price:
-                  type: string
+                  type: number
+                  format: double
                 base_volume:
-                  type: string
+                  type: number
+                  format: double
                 target_volume:
-                  type: string
+                  type: number
+                  format: double
                 trade_timestamp:
                   type: string
                   format: uint64
                 type:
+                  type: string
+                ticker_id:
                   type: string
         default:
           description: An unexpected error response.
@@ -123,6 +288,792 @@ paths:
           format: uint64
       tags:
         - TradeQuery
+  /ratio/{contractId}:
+    get:
+      operationId: PriceGraph
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              graph:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    timeStamp:
+                      type: string
+                      format: uint64
+                    price:
+                      type: number
+                      format: double
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          type: string
+        - name: from
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: to
+          in: query
+          required: false
+          type: string
+          format: uint64
+      tags:
+        - TradeQuery
+  /ratio/{contractId}/lastmonth:
+    get:
+      operationId: PriceGraphLastMonth
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              graph:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    timeStamp:
+                      type: string
+                      format: uint64
+                    price:
+                      type: number
+                      format: double
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          type: string
+      tags:
+        - TradeQuery
+  /ratio/{contractId}/lastweek:
+    get:
+      operationId: PriceGraphLastWeek
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              graph:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    timeStamp:
+                      type: string
+                      format: uint64
+                    price:
+                      type: number
+                      format: double
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          type: string
+      tags:
+        - TradeQuery
+  /ratio/{contractId}/lastyear:
+    get:
+      operationId: PriceGraphLastYear
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              graph:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    timeStamp:
+                      type: string
+                      format: uint64
+                    price:
+                      type: number
+                      format: double
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          type: string
+      tags:
+        - TradeQuery
+  /trade-history/{address}:
+    get:
+      operationId: TradeHistoricals
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              trades:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trade_id:
+                      type: integer
+                      format: int64
+                    price:
+                      type: number
+                      format: double
+                    base_volume:
+                      type: number
+                      format: double
+                    target_volume:
+                      type: number
+                      format: double
+                    trade_timestamp:
+                      type: string
+                      format: uint64
+                    type:
+                      type: string
+                    ticker_id:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+        - name: from
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: to
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: page
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+      tags:
+        - TradeQuery
+  /trade-history/{address}/lastmonth:
+    get:
+      operationId: LastMonthTradeHistoricals
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              trades:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trade_id:
+                      type: integer
+                      format: int64
+                    price:
+                      type: number
+                      format: double
+                    base_volume:
+                      type: number
+                      format: double
+                    target_volume:
+                      type: number
+                      format: double
+                    trade_timestamp:
+                      type: string
+                      format: uint64
+                    type:
+                      type: string
+                    ticker_id:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+      tags:
+        - TradeQuery
+  /trade-history/{address}/lastweek:
+    get:
+      operationId: LastWeekTradeHistoricals
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              trades:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trade_id:
+                      type: integer
+                      format: int64
+                    price:
+                      type: number
+                      format: double
+                    base_volume:
+                      type: number
+                      format: double
+                    target_volume:
+                      type: number
+                      format: double
+                    trade_timestamp:
+                      type: string
+                      format: uint64
+                    type:
+                      type: string
+                    ticker_id:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+      tags:
+        - TradeQuery
+  /trade-history/{address}/lastyear:
+    get:
+      operationId: LastYearTradeHistoricals
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              trades:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trade_id:
+                      type: integer
+                      format: int64
+                    price:
+                      type: number
+                      format: double
+                    base_volume:
+                      type: number
+                      format: double
+                    target_volume:
+                      type: number
+                      format: double
+                    trade_timestamp:
+                      type: string
+                      format: uint64
+                    type:
+                      type: string
+                    ticker_id:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+      tags:
+        - TradeQuery
+  /trading-vol/{contractId}/perday:
+    get:
+      operationId: TradingVolumePerDay
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              tradingVolume:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: object
+                      properties:
+                        day:
+                          type: integer
+                          format: int64
+                        month:
+                          type: integer
+                          format: int64
+                        year:
+                          type: integer
+                          format: int64
+                    tokenAVolume:
+                      type: string
+                      format: uint64
+                    tokenBVolume:
+                      type: string
+                      format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          type: string
+        - name: from
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: to
+          in: query
+          required: false
+          type: string
+          format: uint64
+      tags:
+        - TradeQuery
+  /trading-vol/{contractId}/perhour:
+    get:
+      operationId: TradingVolumePerHour
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              tradingVolume:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    time:
+                      type: object
+                      properties:
+                        hour:
+                          type: integer
+                          format: int64
+                        date:
+                          type: object
+                          properties:
+                            day:
+                              type: integer
+                              format: int64
+                            month:
+                              type: integer
+                              format: int64
+                            year:
+                              type: integer
+                              format: int64
+                    tokenAVolume:
+                      type: string
+                      format: uint64
+                    tokenBVolume:
+                      type: string
+                      format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          type: string
+        - name: from
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: to
+          in: query
+          required: false
+          type: string
+          format: uint64
+      tags:
+        - TradeQuery
+  /trading-vol/{contractId}/permonth:
+    get:
+      operationId: TradingVolumePerMonth
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              tradingVolume:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    month:
+                      type: object
+                      properties:
+                        year:
+                          type: integer
+                          format: int64
+                        month:
+                          type: integer
+                          format: int64
+                    tokenAVolume:
+                      type: string
+                      format: uint64
+                    tokenBVolume:
+                      type: string
+                      format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          type: string
+        - name: from
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: to
+          in: query
+          required: false
+          type: string
+          format: uint64
+      tags:
+        - TradeQuery
+  /trading-vol/{contractId}/perweek:
+    get:
+      operationId: TradingVolumePerWeek
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              tradingVolume:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    week:
+                      type: object
+                      properties:
+                        year:
+                          type: integer
+                          format: int64
+                        week:
+                          type: integer
+                          format: int64
+                    tokenAVolume:
+                      type: string
+                      format: uint64
+                    tokenBVolume:
+                      type: string
+                      format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: contractId
+          in: path
+          required: true
+          type: string
+        - name: from
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: to
+          in: query
+          required: false
+          type: string
+          format: uint64
+      tags:
+        - TradeQuery
+  /activities/{address}:
+    get:
+      operationId: Activities
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              activities:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    user:
+                      type: string
+                    actionType:
+                      type: string
+                    baseCurrency:
+                      type: string
+                    baseVolume:
+                      type: number
+                      format: double
+                    targetCurrency:
+                      type: string
+                    targetVolume:
+                      type: number
+                      format: double
+                    timeStamp:
+                      type: string
+                      format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+        - name: from
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: to
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: page
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+      tags:
+        - UserQuery
 definitions:
   protobufAny:
     type: object
@@ -146,6 +1097,30 @@ definitions:
             '@type':
               type: string
           additionalProperties: {}
+  tickerPoolReserveAResponse:
+    type: object
+    properties:
+      amount:
+        type: number
+        format: double
+  tickerPoolReserveBResponse:
+    type: object
+    properties:
+      amount:
+        type: number
+        format: double
+  tickerPoolShareResponse:
+    type: object
+    properties:
+      amount:
+        type: number
+        format: double
+  tickerPoolTotalLiquidityInUsdResponse:
+    type: object
+    properties:
+      amount:
+        type: number
+        format: double
   tickerTickerInfo:
     type: object
     properties:
@@ -158,13 +1133,23 @@ definitions:
       pool_id:
         type: string
       last_price:
-        type: string
+        type: number
+        format: double
       base_volume:
-        type: string
+        type: number
+        format: double
       target_volume:
-        type: string
+        type: number
+        format: double
+      high:
+        type: number
+        format: double
+      low:
+        type: number
+        format: double
       liquidity_in_usd:
-        type: string
+        type: number
+        format: double
   tickerTickersResponse:
     type: object
     properties:
@@ -182,29 +1167,341 @@ definitions:
             pool_id:
               type: string
             last_price:
-              type: string
+              type: number
+              format: double
             base_volume:
-              type: string
+              type: number
+              format: double
             target_volume:
-              type: string
+              type: number
+              format: double
+            high:
+              type: number
+              format: double
+            low:
+              type: number
+              format: double
             liquidity_in_usd:
+              type: number
+              format: double
+  tradeDate:
+    type: object
+    properties:
+      day:
+        type: integer
+        format: int64
+      month:
+        type: integer
+        format: int64
+      year:
+        type: integer
+        format: int64
+  tradeLastMonthTradeHistoricalResponse:
+    type: object
+    properties:
+      trades:
+        type: array
+        items:
+          type: object
+          properties:
+            trade_id:
+              type: integer
+              format: int64
+            price:
+              type: number
+              format: double
+            base_volume:
+              type: number
+              format: double
+            target_volume:
+              type: number
+              format: double
+            trade_timestamp:
+              type: string
+              format: uint64
+            type:
+              type: string
+            ticker_id:
+              type: string
+  tradeLastWeekTradeHistoricalResponse:
+    type: object
+    properties:
+      trades:
+        type: array
+        items:
+          type: object
+          properties:
+            trade_id:
+              type: integer
+              format: int64
+            price:
+              type: number
+              format: double
+            base_volume:
+              type: number
+              format: double
+            target_volume:
+              type: number
+              format: double
+            trade_timestamp:
+              type: string
+              format: uint64
+            type:
+              type: string
+            ticker_id:
+              type: string
+  tradeLastYearTradeHistoricalResponse:
+    type: object
+    properties:
+      trades:
+        type: array
+        items:
+          type: object
+          properties:
+            trade_id:
+              type: integer
+              format: int64
+            price:
+              type: number
+              format: double
+            base_volume:
+              type: number
+              format: double
+            target_volume:
+              type: number
+              format: double
+            trade_timestamp:
+              type: string
+              format: uint64
+            type:
+              type: string
+            ticker_id:
+              type: string
+  tradeMonth:
+    type: object
+    properties:
+      year:
+        type: integer
+        format: int64
+      month:
+        type: integer
+        format: int64
+  tradePriceGraph:
+    type: object
+    properties:
+      timeStamp:
+        type: string
+        format: uint64
+      price:
+        type: number
+        format: double
+  tradePriceGraphLastMonthResponse:
+    type: object
+    properties:
+      graph:
+        type: array
+        items:
+          type: object
+          properties:
+            timeStamp:
+              type: string
+              format: uint64
+            price:
+              type: number
+              format: double
+  tradePriceGraphLastWeekResponse:
+    type: object
+    properties:
+      graph:
+        type: array
+        items:
+          type: object
+          properties:
+            timeStamp:
+              type: string
+              format: uint64
+            price:
+              type: number
+              format: double
+  tradePriceGraphLastYearResponse:
+    type: object
+    properties:
+      graph:
+        type: array
+        items:
+          type: object
+          properties:
+            timeStamp:
+              type: string
+              format: uint64
+            price:
+              type: number
+              format: double
+  tradePriceGraphResponse:
+    type: object
+    properties:
+      graph:
+        type: array
+        items:
+          type: object
+          properties:
+            timeStamp:
+              type: string
+              format: uint64
+            price:
+              type: number
+              format: double
+  tradeTimeHour:
+    type: object
+    properties:
+      hour:
+        type: integer
+        format: int64
+      date:
+        type: object
+        properties:
+          day:
+            type: integer
+            format: int64
+          month:
+            type: integer
+            format: int64
+          year:
+            type: integer
+            format: int64
+  tradeTradeHistoricalResponse:
+    type: object
+    properties:
+      trades:
+        type: array
+        items:
+          type: object
+          properties:
+            trade_id:
+              type: integer
+              format: int64
+            price:
+              type: number
+              format: double
+            base_volume:
+              type: number
+              format: double
+            target_volume:
+              type: number
+              format: double
+            trade_timestamp:
+              type: string
+              format: uint64
+            type:
+              type: string
+            ticker_id:
               type: string
   tradeTradeInfo:
     type: object
     properties:
       trade_id:
-        type: string
+        type: integer
+        format: int64
       price:
-        type: string
+        type: number
+        format: double
       base_volume:
-        type: string
+        type: number
+        format: double
       target_volume:
-        type: string
+        type: number
+        format: double
       trade_timestamp:
         type: string
         format: uint64
       type:
         type: string
+      ticker_id:
+        type: string
+  tradeTradeVolumeByDate:
+    type: object
+    properties:
+      date:
+        type: object
+        properties:
+          day:
+            type: integer
+            format: int64
+          month:
+            type: integer
+            format: int64
+          year:
+            type: integer
+            format: int64
+      tokenAVolume:
+        type: string
+        format: uint64
+      tokenBVolume:
+        type: string
+        format: uint64
+  tradeTradeVolumeByHour:
+    type: object
+    properties:
+      time:
+        type: object
+        properties:
+          hour:
+            type: integer
+            format: int64
+          date:
+            type: object
+            properties:
+              day:
+                type: integer
+                format: int64
+              month:
+                type: integer
+                format: int64
+              year:
+                type: integer
+                format: int64
+      tokenAVolume:
+        type: string
+        format: uint64
+      tokenBVolume:
+        type: string
+        format: uint64
+  tradeTradeVolumeByMonth:
+    type: object
+    properties:
+      month:
+        type: object
+        properties:
+          year:
+            type: integer
+            format: int64
+          month:
+            type: integer
+            format: int64
+      tokenAVolume:
+        type: string
+        format: uint64
+      tokenBVolume:
+        type: string
+        format: uint64
+  tradeTradeVolumeByWeek:
+    type: object
+    properties:
+      week:
+        type: object
+        properties:
+          year:
+            type: integer
+            format: int64
+          week:
+            type: integer
+            format: int64
+      tokenAVolume:
+        type: string
+        format: uint64
+      tokenBVolume:
+        type: string
+        format: uint64
   tradeTradesResponse:
     type: object
     properties:
@@ -214,15 +1511,179 @@ definitions:
           type: object
           properties:
             trade_id:
-              type: string
+              type: integer
+              format: int64
             price:
-              type: string
+              type: number
+              format: double
             base_volume:
-              type: string
+              type: number
+              format: double
             target_volume:
-              type: string
+              type: number
+              format: double
             trade_timestamp:
               type: string
               format: uint64
             type:
               type: string
+            ticker_id:
+              type: string
+  tradeTradingVolumePerDayResponse:
+    type: object
+    properties:
+      tradingVolume:
+        type: array
+        items:
+          type: object
+          properties:
+            date:
+              type: object
+              properties:
+                day:
+                  type: integer
+                  format: int64
+                month:
+                  type: integer
+                  format: int64
+                year:
+                  type: integer
+                  format: int64
+            tokenAVolume:
+              type: string
+              format: uint64
+            tokenBVolume:
+              type: string
+              format: uint64
+  tradeTradingVolumePerHourResponse:
+    type: object
+    properties:
+      tradingVolume:
+        type: array
+        items:
+          type: object
+          properties:
+            time:
+              type: object
+              properties:
+                hour:
+                  type: integer
+                  format: int64
+                date:
+                  type: object
+                  properties:
+                    day:
+                      type: integer
+                      format: int64
+                    month:
+                      type: integer
+                      format: int64
+                    year:
+                      type: integer
+                      format: int64
+            tokenAVolume:
+              type: string
+              format: uint64
+            tokenBVolume:
+              type: string
+              format: uint64
+  tradeTradingVolumePerMonthResponse:
+    type: object
+    properties:
+      tradingVolume:
+        type: array
+        items:
+          type: object
+          properties:
+            month:
+              type: object
+              properties:
+                year:
+                  type: integer
+                  format: int64
+                month:
+                  type: integer
+                  format: int64
+            tokenAVolume:
+              type: string
+              format: uint64
+            tokenBVolume:
+              type: string
+              format: uint64
+  tradeTradingVolumePerWeekResponse:
+    type: object
+    properties:
+      tradingVolume:
+        type: array
+        items:
+          type: object
+          properties:
+            week:
+              type: object
+              properties:
+                year:
+                  type: integer
+                  format: int64
+                week:
+                  type: integer
+                  format: int64
+            tokenAVolume:
+              type: string
+              format: uint64
+            tokenBVolume:
+              type: string
+              format: uint64
+  tradeWeek:
+    type: object
+    properties:
+      year:
+        type: integer
+        format: int64
+      week:
+        type: integer
+        format: int64
+  userActivitiesResponse:
+    type: object
+    properties:
+      activities:
+        type: array
+        items:
+          type: object
+          properties:
+            user:
+              type: string
+            actionType:
+              type: string
+            baseCurrency:
+              type: string
+            baseVolume:
+              type: number
+              format: double
+            targetCurrency:
+              type: string
+            targetVolume:
+              type: number
+              format: double
+            timeStamp:
+              type: string
+              format: uint64
+  userActivity:
+    type: object
+    properties:
+      user:
+        type: string
+      actionType:
+        type: string
+      baseCurrency:
+        type: string
+      baseVolume:
+        type: number
+        format: double
+      targetCurrency:
+        type: string
+      targetVolume:
+        type: number
+        format: double
+      timeStamp:
+        type: string
+        format: uint64
