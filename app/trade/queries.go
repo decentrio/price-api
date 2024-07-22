@@ -79,11 +79,22 @@ func (k Keeper) TradingVolumePerWeek(ctx context.Context, request *types.Trading
 	var ticker tickertypes.Ticker
 	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
 
+	from := request.From
+	to := request.To
+
+	curTime := time.Now().Unix()
+
+	if from == 0 {
+		from = uint64(curTime - YearSec + WeekSec - curTime % WeekSec)
+	}
+	if to == 0 {
+		to = uint64(curTime)
+	}
 	var trades []*types.Trade
 	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
 		Where("ticker_id = ?", ticker.TickerId).
-		Where("trade_timestamp >= ?", request.From).
-		Where("trade_timestamp <= ?", request.To)
+		Where("trade_timestamp >= ?", from).
+		Where("trade_timestamp <= ?", to)
 
 	err := query.Find(&trades).Error
 	if err != nil {
@@ -133,11 +144,22 @@ func (k Keeper) TradingVolumePerMonth(ctx context.Context, request *types.Tradin
 	var ticker tickertypes.Ticker
 	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
 
+	from := request.From
+	to := request.To
+
+	curTime := time.Now().Unix()
+
+	if from == 0 {
+		from = uint64(curTime - YearSec + MonthSec - curTime % MonthSec)
+	}
+	if to == 0 {
+		to = uint64(curTime)
+	}
 	var trades []*types.Trade
 	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
 		Where("ticker_id = ?", ticker.TickerId).
-		Where("trade_timestamp >= ?", request.From).
-		Where("trade_timestamp <= ?", request.To)
+		Where("trade_timestamp >= ?", from).
+		Where("trade_timestamp <= ?", to)
 
 	err := query.Find(&trades).Error
 	if err != nil {
@@ -188,11 +210,22 @@ func (k Keeper) TradingVolumePerDay(ctx context.Context, request *types.TradingV
 	var ticker tickertypes.Ticker
 	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
 
+	from := request.From
+	to := request.To
+
+	curTime := time.Now().Unix()
+
+	if from == 0 {
+		from = uint64(curTime - WeekSec + DaySec - curTime % DaySec)
+	}
+	if to == 0 {
+		to = uint64(curTime)
+	}
 	var trades []*types.Trade
 	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
 		Where("ticker_id = ?", ticker.TickerId).
-		Where("trade_timestamp >= ?", request.From).
-		Where("trade_timestamp <= ?", request.To)
+		Where("trade_timestamp >= ?", from).
+		Where("trade_timestamp <= ?", to)
 
 	err := query.Find(&trades).Error
 	if err != nil {
@@ -243,11 +276,22 @@ func (k Keeper) TradingVolumePerHour(ctx context.Context, request *types.Trading
 	var ticker tickertypes.Ticker
 	k.dbHandler.Table(app.TICKER_TABLE).Where("pool_id = ?", request.ContractId).Scan(&ticker)
 
+	from := request.From
+	to := request.To
+
+	curTime := time.Now().Unix()
+
+	if from == 0 {
+		from = uint64(curTime - DaySec + HourSec - curTime % HourSec)
+	}
+	if to == 0 {
+		to = uint64(curTime)
+	}
 	var trades []*types.Trade
 	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
 		Where("ticker_id = ?", ticker.TickerId).
-		Where("trade_timestamp >= ?", request.From).
-		Where("trade_timestamp <= ?", request.To)
+		Where("trade_timestamp >= ?", from).
+		Where("trade_timestamp <= ?", to)
 
 	err := query.Find(&trades).Error
 	if err != nil {
@@ -284,7 +328,6 @@ func (k Keeper) TradingVolumePerHour(ctx context.Context, request *types.Trading
 
 			tradingVolumes[tradingHour.ToString()] = tradingVolume
 		}
-
 	}
 
 	vals := maps.Values(tradingVolumes)

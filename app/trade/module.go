@@ -12,6 +12,13 @@ const (
 	Week  = Day * 7
 	Month = Day * 30
 	Year  = Day * 365
+
+	DaySec   = 86400
+	HourSec  = 3600
+	MinSec   = 60
+	WeekSec  = DaySec * 7
+	MonthSec = DaySec * 30
+	YearSec  = DaySec * 365
 )
 
 type AppModule struct {
