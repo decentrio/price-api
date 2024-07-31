@@ -16,9 +16,6 @@ import (
 var _ types.TradeQueryServer = Keeper{}
 
 func (k Keeper) Trades(ctx context.Context, request *types.TradesRequest) (*types.TradesResponse, error) {
-	if request.TickerId == "" {
-		return &types.TradesResponse{}, fmt.Errorf("error empty ticker id")
-	}
 	var trades []*types.Trade
 
 	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC")
