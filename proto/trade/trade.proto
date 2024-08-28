@@ -3,6 +3,34 @@ package trade;
 
 option go_package = "github.com/decentrio/price-api/types/trade";
 
+message Share {
+  string pool_address = 1;
+  string account_address = 2;
+  uint64 amount = 3;
+  uint32 ledger = 4;
+  string tx_hash = 5;
+  string tx_time = 6;
+}
+
+message Stake {
+  string pool_address = 1;
+  string account_address = 2;
+  uint64 amount = 3;
+  uint32 ledger = 4;
+  string tx_hash = 5;
+  string tx_time = 6;
+}
+
+message Pool {
+  string pool_address = 1;
+  uint64 reserve_a = 2;
+  uint64 reserve_b = 3;
+  uint64 share = 4;
+  uint32 ledger = 5;
+  string tx_hash = 6;
+  string tx_time = 7;
+}
+
 message Trade {
   uint32 trade_id = 1;
   string ticker_id = 2;
@@ -16,13 +44,13 @@ message Trade {
 }
 
 message TradeInfo {
-  uint32 trade_id = 1 [json_name="trade_id"];
-  double price = 2 [json_name="price"];
-  double base_volume = 3 [json_name="base_volume"];
-  double target_volume = 4 [json_name="target_volume"];
-  uint64 trade_timestamp = 5 [json_name="trade_timestamp"];
-  string type = 6 [json_name="type"];
-  string ticker_id = 7 [json_name="ticker_id"];
+  uint32 trade_id = 1 [ json_name = "trade_id" ];
+  double price = 2 [ json_name = "price" ];
+  double base_volume = 3 [ json_name = "base_volume" ];
+  double target_volume = 4 [ json_name = "target_volume" ];
+  uint64 trade_timestamp = 5 [ json_name = "trade_timestamp" ];
+  string type = 6 [ json_name = "type" ];
+  string ticker_id = 7 [ json_name = "ticker_id" ];
 }
 
 message Week {
@@ -50,7 +78,7 @@ message TradeVolumeByMonth {
 message Date {
   uint32 day = 1;
   uint32 month = 2;
-  uint32 year = 3; 
+  uint32 year = 3;
 }
 
 message TradeVolumeByDate {

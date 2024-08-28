@@ -13,7 +13,7 @@ message Ticker {
   uint64 target_volume = 7;
   double high = 8;
   double low = 9;
-  uint64 liquidity_in_usd = 10;
+  double liquidity_in_usd = 10;
   uint64 share_liquidity = 11;
   uint64 base_liquidity = 12;
   uint64 target_liquidity = 13;
