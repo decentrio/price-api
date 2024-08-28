@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	TradeQuery_Trades_FullMethodName                    = "/trade.TradeQuery/Trades"
+	TradeQuery_AdvancedTrades_FullMethodName            = "/trade.TradeQuery/AdvancedTrades"
 	TradeQuery_Shares_FullMethodName                    = "/trade.TradeQuery/Shares"
 	TradeQuery_LockShares_FullMethodName                = "/trade.TradeQuery/LockShares"
 	TradeQuery_TradingVolumePerWeek_FullMethodName      = "/trade.TradeQuery/TradingVolumePerWeek"
@@ -40,8 +41,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TradeQueryClient interface {
-	// Trades is used to return data on historical completed trades for a given market pair.
+	// Trades is used to return data on historical completed trades for a given
+	// market pair.
 	Trades(ctx context.Context, in *TradesRequest, opts ...grpc.CallOption) (*TradesResponse, error)
+	AdvancedTrades(ctx context.Context, in *AdvancedTradesRequest, opts ...grpc.CallOption) (*AdvancedTradesResponse, error)
 	Shares(ctx context.Context, in *SharesRequest, opts ...grpc.CallOption) (*SharesResponse, error)
 	LockShares(ctx context.Context, in *LockSharesRequest, opts ...grpc.CallOption) (*LockSharesResponse, error)
 	TradingVolumePerWeek(ctx context.Context, in *TradingVolumePerWeekRequest, opts ...grpc.CallOption) (*TradingVolumePerWeekResponse, error)
@@ -70,6 +73,16 @@ func (c *tradeQueryClient) Trades(ctx context.Context, in *TradesRequest, opts .
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(TradesResponse)
 	err := c.cc.Invoke(ctx, TradeQuery_Trades_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) AdvancedTrades(ctx context.Context, in *AdvancedTradesRequest, opts ...grpc.CallOption) (*AdvancedTradesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AdvancedTradesResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_AdvancedTrades_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -220,8 +233,10 @@ func (c *tradeQueryClient) LastYearTradeHistoricals(ctx context.Context, in *Las
 // All implementations must embed UnimplementedTradeQueryServer
 // for forward compatibility.
 type TradeQueryServer interface {
-	// Trades is used to return data on historical completed trades for a given market pair.
+	// Trades is used to return data on historical completed trades for a given
+	// market pair.
 	Trades(context.Context, *TradesRequest) (*TradesResponse, error)
+	AdvancedTrades(context.Context, *AdvancedTradesRequest) (*AdvancedTradesResponse, error)
 	Shares(context.Context, *SharesRequest) (*SharesResponse, error)
 	LockShares(context.Context, *LockSharesRequest) (*LockSharesResponse, error)
 	TradingVolumePerWeek(context.Context, *TradingVolumePerWeekRequest) (*TradingVolumePerWeekResponse, error)
@@ -248,6 +263,9 @@ type UnimplementedTradeQueryServer struct{}
 
 func (UnimplementedTradeQueryServer) Trades(context.Context, *TradesRequest) (*TradesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Trades not implemented")
+}
+func (UnimplementedTradeQueryServer) AdvancedTrades(context.Context, *AdvancedTradesRequest) (*AdvancedTradesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdvancedTrades not implemented")
 }
 func (UnimplementedTradeQueryServer) Shares(context.Context, *SharesRequest) (*SharesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Shares not implemented")
@@ -326,6 +344,24 @@ func _TradeQuery_Trades_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TradeQueryServer).Trades(ctx, req.(*TradesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_AdvancedTrades_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdvancedTradesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).AdvancedTrades(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_AdvancedTrades_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).AdvancedTrades(ctx, req.(*AdvancedTradesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -592,6 +628,10 @@ var TradeQuery_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Trades",
 			Handler:    _TradeQuery_Trades_Handler,
+		},
+		{
+			MethodName: "AdvancedTrades",
+			Handler:    _TradeQuery_AdvancedTrades_Handler,
 		},
 		{
 			MethodName: "Shares",

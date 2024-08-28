@@ -38,7 +38,7 @@ func (k Keeper) Trades(ctx context.Context, request *types.TradesRequest) (*type
 
 	err := query.Find(&trades).Error
 	if err != nil {
-		return &types.TradesResponse{}, nil
+		return &types.TradesResponse{}, err
 	}
 
 	var tradeInfos []*types.TradeInfo
@@ -48,6 +48,56 @@ func (k Keeper) Trades(ctx context.Context, request *types.TradesRequest) (*type
 	}
 
 	return &types.TradesResponse{
+		Trades: tradeInfos,
+	}, nil
+}
+
+func (k Keeper) AdvancedTrades(ctx context.Context, request *types.AdvancedTradesRequest) (*types.AdvancedTradesResponse, error) {
+	var trades []*types.Trade
+
+	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC")
+
+	if request.TickerId != "" {
+		query = query.Where("ticker_id = ?", request.TickerId)
+	}
+	if request.Type != "" {
+		query = query.Where("trade_type = ?", strings.ToLower(request.Type))
+	}
+	if request.StartTime != 0 {
+		query = query.Where("trade_timestamp >= ?", request.StartTime)
+	}
+	if request.EndTime != 0 {
+		query = query.Where("trade_timestamp <= ?", request.EndTime)
+	}
+	if request.Limit != 0 {
+		query = query.Limit(int(request.Limit))
+	}
+	if request.Address != "" {
+		query = query.Where("maker = ?", request.Address)
+	}
+	if request.PoolId != "" {
+		var ticker tickertypes.Ticker
+		err := k.dbHandler.Table(app.TICKER_TABLE).
+			Where("pool_id = ?", request.PoolId).
+			First(&ticker).Error
+		if err != nil {
+			return &types.AdvancedTradesResponse{}, err
+		}
+		query = query.Where("ticker_id = ?", ticker.TickerId)
+	}
+
+	err := query.Order("trade_timestamp DESC").Find(&trades).Error
+	if err != nil {
+		return &types.AdvancedTradesResponse{}, err
+	}
+
+	var tradeInfos []*types.TradeInfo
+
+	for _, trade := range trades {
+		tradeInfos = append(tradeInfos, convertToInfo(trade))
+	}
+
+	return &types.AdvancedTradesResponse{
 		Trades: tradeInfos,
 	}, nil
 }

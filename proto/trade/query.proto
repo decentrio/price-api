@@ -7,11 +7,18 @@ import "trade/trade.proto";
 option go_package = "github.com/decentrio/price-api/types/trade";
 
 service TradeQuery {
-  // Trades is used to return data on historical completed trades for a given market pair.
+  // Trades is used to return data on historical completed trades for a given
+  // market pair.
   rpc Trades(TradesRequest) returns (TradesResponse) {
     option (google.api.http) = {
-      get: "/historical_trades"
-      response_body: "trades"
+      get : "/historical_trades"
+      response_body : "trades"
+    };
+  }
+  rpc AdvancedTrades(AdvancedTradesRequest) returns (AdvancedTradesResponse) {
+    option (google.api.http) = {
+      get : "/trades"
+      response_body : "trades"
     };
   }
   rpc Shares(SharesRequest) returns (SharesResponse) {
@@ -20,40 +27,51 @@ service TradeQuery {
   rpc LockShares(LockSharesRequest) returns (LockSharesResponse) {
     option (google.api.http).get = "/lock-shares/{address}/{pool_id}";
   }
-  rpc TradingVolumePerWeek(TradingVolumePerWeekRequest) returns (TradingVolumePerWeekResponse) {
+  rpc TradingVolumePerWeek(TradingVolumePerWeekRequest)
+      returns (TradingVolumePerWeekResponse) {
     option (google.api.http).get = "/trading-vol/{contract_id}/perweek";
   }
-  rpc TradingVolumePerMonth(TradingVolumePerMonthRequest) returns (TradingVolumePerMonthResponse) {
+  rpc TradingVolumePerMonth(TradingVolumePerMonthRequest)
+      returns (TradingVolumePerMonthResponse) {
     option (google.api.http).get = "/trading-vol/{contract_id}/permonth";
   }
-  rpc TradingVolumePerDay(TradingVolumePerDayRequest) returns (TradingVolumePerDayResponse) {
+  rpc TradingVolumePerDay(TradingVolumePerDayRequest)
+      returns (TradingVolumePerDayResponse) {
     option (google.api.http).get = "/trading-vol/{contract_id}/perday";
   }
-  rpc TradingVolumePerHour(TradingVolumePerHourRequest) returns (TradingVolumePerHourResponse) {
+  rpc TradingVolumePerHour(TradingVolumePerHourRequest)
+      returns (TradingVolumePerHourResponse) {
     option (google.api.http).get = "/trading-vol/{contract_id}/perhour";
   }
   rpc PriceGraph(PriceGraphRequest) returns (PriceGraphResponse) {
     option (google.api.http).get = "/ratio/{contract_id}";
   }
-  rpc PriceGraphLastWeek(PriceGraphLastWeekRequest) returns (PriceGraphLastWeekResponse) {
+  rpc PriceGraphLastWeek(PriceGraphLastWeekRequest)
+      returns (PriceGraphLastWeekResponse) {
     option (google.api.http).get = "/ratio/{contract_id}/lastweek";
   }
-  rpc PriceGraphLastMonth(PriceGraphLastMonthRequest) returns (PriceGraphLastMonthResponse) {
+  rpc PriceGraphLastMonth(PriceGraphLastMonthRequest)
+      returns (PriceGraphLastMonthResponse) {
     option (google.api.http).get = "/ratio/{contract_id}/lastmonth";
   }
-  rpc PriceGraphLastYear(PriceGraphLastYearRequest) returns (PriceGraphLastYearResponse) {
+  rpc PriceGraphLastYear(PriceGraphLastYearRequest)
+      returns (PriceGraphLastYearResponse) {
     option (google.api.http).get = "/ratio/{contract_id}/lastyear";
   }
-  rpc TradeHistoricals(TradeHistoricalRequest) returns (TradeHistoricalResponse) {
+  rpc TradeHistoricals(TradeHistoricalRequest)
+      returns (TradeHistoricalResponse) {
     option (google.api.http).get = "/trade-history/{address}";
   }
-  rpc LastWeekTradeHistoricals(LastWeekTradeHistoricalRequest) returns (LastWeekTradeHistoricalResponse) {
+  rpc LastWeekTradeHistoricals(LastWeekTradeHistoricalRequest)
+      returns (LastWeekTradeHistoricalResponse) {
     option (google.api.http).get = "/trade-history/{address}/lastweek";
   }
-  rpc LastMonthTradeHistoricals(LastMonthTradeHistoricalRequest) returns (LastMonthTradeHistoricalResponse) {
+  rpc LastMonthTradeHistoricals(LastMonthTradeHistoricalRequest)
+      returns (LastMonthTradeHistoricalResponse) {
     option (google.api.http).get = "/trade-history/{address}/lastmonth";
   }
-  rpc LastYearTradeHistoricals(LastYearTradeHistoricalRequest) returns (LastYearTradeHistoricalResponse) {
+  rpc LastYearTradeHistoricals(LastYearTradeHistoricalRequest)
+      returns (LastYearTradeHistoricalResponse) {
     option (google.api.http).get = "/trade-history/{address}/lastyear";
   }
 }
@@ -67,6 +85,18 @@ message TradesRequest {
 }
 
 message TradesResponse { repeated TradeInfo trades = 1; }
+
+message AdvancedTradesRequest {
+  string ticker_id = 1;
+  string pool_id = 2;
+  string address = 3;
+  string type = 4;
+  uint32 limit = 5;
+  uint64 start_time = 6;
+  uint64 end_time = 7;
+}
+
+message AdvancedTradesResponse { repeated TradeInfo trades = 1; }
 
 message TradingVolumePerWeekRequest {
   string contract_id = 1;
@@ -114,33 +144,19 @@ message PriceGraphRequest {
   uint64 to = 3;
 }
 
-message PriceGraphResponse {
-  repeated PriceGraph graph = 1;
-}
+message PriceGraphResponse { repeated PriceGraph graph = 1; }
 
-message PriceGraphLastWeekRequest {
-  string contract_id = 1;
-}
+message PriceGraphLastWeekRequest { string contract_id = 1; }
 
-message PriceGraphLastWeekResponse {
-  repeated PriceGraph graph = 1;
-}
+message PriceGraphLastWeekResponse { repeated PriceGraph graph = 1; }
 
-message PriceGraphLastMonthRequest {
-  string contract_id = 1;
-}
+message PriceGraphLastMonthRequest { string contract_id = 1; }
 
-message PriceGraphLastMonthResponse {
-  repeated PriceGraph graph = 1;
-}
+message PriceGraphLastMonthResponse { repeated PriceGraph graph = 1; }
 
-message PriceGraphLastYearRequest {
-  string contract_id = 1;
-}
+message PriceGraphLastYearRequest { string contract_id = 1; }
 
-message PriceGraphLastYearResponse {
-  repeated PriceGraph graph = 1;
-}
+message PriceGraphLastYearResponse { repeated PriceGraph graph = 1; }
 
 message TradeHistoricalRequest {
   string address = 1;
@@ -150,48 +166,30 @@ message TradeHistoricalRequest {
   int32 page_size = 5;
 }
 
-message TradeHistoricalResponse {
-  repeated TradeInfo trades = 1;
-}
+message TradeHistoricalResponse { repeated TradeInfo trades = 1; }
 
-message LastWeekTradeHistoricalRequest {
-  string address = 1;
-}
+message LastWeekTradeHistoricalRequest { string address = 1; }
 
-message LastWeekTradeHistoricalResponse {
-  repeated TradeInfo trades = 1;
-}
+message LastWeekTradeHistoricalResponse { repeated TradeInfo trades = 1; }
 
-message LastMonthTradeHistoricalRequest {
-  string address = 1;
-}
+message LastMonthTradeHistoricalRequest { string address = 1; }
 
-message LastMonthTradeHistoricalResponse {
-  repeated TradeInfo trades = 1;
-}
+message LastMonthTradeHistoricalResponse { repeated TradeInfo trades = 1; }
 
-message LastYearTradeHistoricalRequest {
-  string address = 1;
-}
+message LastYearTradeHistoricalRequest { string address = 1; }
 
-message LastYearTradeHistoricalResponse {
-  repeated TradeInfo trades = 1;
-}
+message LastYearTradeHistoricalResponse { repeated TradeInfo trades = 1; }
 
 message SharesRequest {
   string address = 1;
   string pool_id = 2;
 }
 
-message SharesResponse {
-  uint64 shares = 1;
-}
+message SharesResponse { uint64 shares = 1; }
 
 message LockSharesRequest {
   string address = 1;
   string pool_id = 2;
 }
 
-message LockSharesResponse {
-  uint64 shares = 1;
-}
+message LockSharesResponse { uint64 shares = 1; }
