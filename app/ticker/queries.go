@@ -57,6 +57,11 @@ func convertToInfo(ticker *types.Ticker) *types.TickerInfo {
 func (k Keeper) Price(ctx context.Context, request *types.TokenPriceRequest) (*types.TokenPriceResponse, error) {
 	var token tradetypes.Token
 
+	if request.Name == "USDC" {
+		return &types.TokenPriceResponse{
+			Price: 1,
+		}, nil
+	}
 	err := k.dbHandler.Table(app.TOKEN_TABLE).Where("symbol = ?", request.Name).
 		First(&token).Error
 	if err != nil {
