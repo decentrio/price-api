@@ -67,6 +67,38 @@ func convertToInfo(trade *types.Trade) *types.TradeInfo {
 	}
 }
 
+func (k Keeper) Shares(ctx context.Context, request *types.SharesRequest) (*types.SharesResponse, error) {
+	var data types.Share
+	err := k.dbHandler.Table(app.SHARE_TABLE).
+		Where("pool_address = ?", request.PoolId).
+		Where("account_address = ?", request.Address).
+		Order("tx_time DESC").
+		First(&data).Error
+	if err != nil {
+		return &types.SharesResponse{}, err
+	}
+
+	return &types.SharesResponse{
+		Shares: data.Amount,
+	}, nil
+}
+
+func (k Keeper) LockShares(ctx context.Context, request *types.LockSharesRequest) (*types.LockSharesResponse, error) {
+	var data types.Stake
+	err := k.dbHandler.Table(app.STAKE_TABLE).
+		Where("pool_address = ?", request.PoolId).
+		Where("account_address = ?", request.Address).
+		Order("tx_time DESC").
+		First(&data).Error
+	if err != nil {
+		return &types.LockSharesResponse{}, err
+	}
+
+	return &types.LockSharesResponse{
+		Shares: data.Amount,
+	}, nil
+}
+
 // historical trading volume
 func (k Keeper) TradingVolumePerWeek(ctx context.Context, request *types.TradingVolumePerWeekRequest) (*types.TradingVolumePerWeekResponse, error) {
 	if request.ContractId == "" {
@@ -82,7 +114,7 @@ func (k Keeper) TradingVolumePerWeek(ctx context.Context, request *types.Trading
 	curTime := time.Now().Unix()
 
 	if from == 0 {
-		from = uint64(curTime - YearSec + WeekSec - curTime % WeekSec)
+		from = uint64(curTime - YearSec + WeekSec - curTime%WeekSec)
 	}
 	if to == 0 {
 		to = uint64(curTime)
@@ -147,7 +179,7 @@ func (k Keeper) TradingVolumePerMonth(ctx context.Context, request *types.Tradin
 	curTime := time.Now().Unix()
 
 	if from == 0 {
-		from = uint64(curTime - YearSec + MonthSec - curTime % MonthSec)
+		from = uint64(curTime - YearSec + MonthSec - curTime%MonthSec)
 	}
 	if to == 0 {
 		to = uint64(curTime)
@@ -213,7 +245,7 @@ func (k Keeper) TradingVolumePerDay(ctx context.Context, request *types.TradingV
 	curTime := time.Now().Unix()
 
 	if from == 0 {
-		from = uint64(curTime - WeekSec + DaySec - curTime % DaySec)
+		from = uint64(curTime - WeekSec + DaySec - curTime%DaySec)
 	}
 	if to == 0 {
 		to = uint64(curTime)
@@ -279,7 +311,7 @@ func (k Keeper) TradingVolumePerHour(ctx context.Context, request *types.Trading
 	curTime := time.Now().Unix()
 
 	if from == 0 {
-		from = uint64(curTime - DaySec + HourSec - curTime % HourSec)
+		from = uint64(curTime - DaySec + HourSec - curTime%HourSec)
 	}
 	if to == 0 {
 		to = uint64(curTime)

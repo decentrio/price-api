@@ -20,6 +20,8 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	TradeQuery_Trades_FullMethodName                    = "/trade.TradeQuery/Trades"
+	TradeQuery_Shares_FullMethodName                    = "/trade.TradeQuery/Shares"
+	TradeQuery_LockShares_FullMethodName                = "/trade.TradeQuery/LockShares"
 	TradeQuery_TradingVolumePerWeek_FullMethodName      = "/trade.TradeQuery/TradingVolumePerWeek"
 	TradeQuery_TradingVolumePerMonth_FullMethodName     = "/trade.TradeQuery/TradingVolumePerMonth"
 	TradeQuery_TradingVolumePerDay_FullMethodName       = "/trade.TradeQuery/TradingVolumePerDay"
@@ -40,6 +42,8 @@ const (
 type TradeQueryClient interface {
 	// Trades is used to return data on historical completed trades for a given market pair.
 	Trades(ctx context.Context, in *TradesRequest, opts ...grpc.CallOption) (*TradesResponse, error)
+	Shares(ctx context.Context, in *SharesRequest, opts ...grpc.CallOption) (*SharesResponse, error)
+	LockShares(ctx context.Context, in *LockSharesRequest, opts ...grpc.CallOption) (*LockSharesResponse, error)
 	TradingVolumePerWeek(ctx context.Context, in *TradingVolumePerWeekRequest, opts ...grpc.CallOption) (*TradingVolumePerWeekResponse, error)
 	TradingVolumePerMonth(ctx context.Context, in *TradingVolumePerMonthRequest, opts ...grpc.CallOption) (*TradingVolumePerMonthResponse, error)
 	TradingVolumePerDay(ctx context.Context, in *TradingVolumePerDayRequest, opts ...grpc.CallOption) (*TradingVolumePerDayResponse, error)
@@ -66,6 +70,26 @@ func (c *tradeQueryClient) Trades(ctx context.Context, in *TradesRequest, opts .
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(TradesResponse)
 	err := c.cc.Invoke(ctx, TradeQuery_Trades_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) Shares(ctx context.Context, in *SharesRequest, opts ...grpc.CallOption) (*SharesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SharesResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_Shares_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) LockShares(ctx context.Context, in *LockSharesRequest, opts ...grpc.CallOption) (*LockSharesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LockSharesResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_LockShares_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -198,6 +222,8 @@ func (c *tradeQueryClient) LastYearTradeHistoricals(ctx context.Context, in *Las
 type TradeQueryServer interface {
 	// Trades is used to return data on historical completed trades for a given market pair.
 	Trades(context.Context, *TradesRequest) (*TradesResponse, error)
+	Shares(context.Context, *SharesRequest) (*SharesResponse, error)
+	LockShares(context.Context, *LockSharesRequest) (*LockSharesResponse, error)
 	TradingVolumePerWeek(context.Context, *TradingVolumePerWeekRequest) (*TradingVolumePerWeekResponse, error)
 	TradingVolumePerMonth(context.Context, *TradingVolumePerMonthRequest) (*TradingVolumePerMonthResponse, error)
 	TradingVolumePerDay(context.Context, *TradingVolumePerDayRequest) (*TradingVolumePerDayResponse, error)
@@ -222,6 +248,12 @@ type UnimplementedTradeQueryServer struct{}
 
 func (UnimplementedTradeQueryServer) Trades(context.Context, *TradesRequest) (*TradesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Trades not implemented")
+}
+func (UnimplementedTradeQueryServer) Shares(context.Context, *SharesRequest) (*SharesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Shares not implemented")
+}
+func (UnimplementedTradeQueryServer) LockShares(context.Context, *LockSharesRequest) (*LockSharesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LockShares not implemented")
 }
 func (UnimplementedTradeQueryServer) TradingVolumePerWeek(context.Context, *TradingVolumePerWeekRequest) (*TradingVolumePerWeekResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TradingVolumePerWeek not implemented")
@@ -294,6 +326,42 @@ func _TradeQuery_Trades_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TradeQueryServer).Trades(ctx, req.(*TradesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_Shares_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SharesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).Shares(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_Shares_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).Shares(ctx, req.(*SharesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_LockShares_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LockSharesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).LockShares(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_LockShares_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).LockShares(ctx, req.(*LockSharesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -524,6 +592,14 @@ var TradeQuery_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Trades",
 			Handler:    _TradeQuery_Trades_Handler,
+		},
+		{
+			MethodName: "Shares",
+			Handler:    _TradeQuery_Shares_Handler,
+		},
+		{
+			MethodName: "LockShares",
+			Handler:    _TradeQuery_LockShares_Handler,
 		},
 		{
 			MethodName: "TradingVolumePerWeek",

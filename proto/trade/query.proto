@@ -14,6 +14,12 @@ service TradeQuery {
       response_body: "trades"
     };
   }
+  rpc Shares(SharesRequest) returns (SharesResponse) {
+    option (google.api.http).get = "/shares/{address}/{pool_id}";
+  }
+  rpc LockShares(LockSharesRequest) returns (LockSharesResponse) {
+    option (google.api.http).get = "/lock-shares/{address}/{pool_id}";
+  }
   rpc TradingVolumePerWeek(TradingVolumePerWeekRequest) returns (TradingVolumePerWeekResponse) {
     option (google.api.http).get = "/trading-vol/{contract_id}/perweek";
   }
@@ -170,4 +176,22 @@ message LastYearTradeHistoricalRequest {
 
 message LastYearTradeHistoricalResponse {
   repeated TradeInfo trades = 1;
+}
+
+message SharesRequest {
+  string address = 1;
+  string pool_id = 2;
+}
+
+message SharesResponse {
+  uint64 shares = 1;
+}
+
+message LockSharesRequest {
+  string address = 1;
+  string pool_id = 2;
+}
+
+message LockSharesResponse {
+  uint64 shares = 1;
 }
