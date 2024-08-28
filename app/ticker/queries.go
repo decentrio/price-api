@@ -54,11 +54,23 @@ func convertToInfo(ticker *types.Ticker) *types.TickerInfo {
 	}
 }
 
-// Liquidity
+func (k Keeper) Price(ctx context.Context, request *types.TokenPriceRequest) (*types.TokenPriceResponse, error) {
+	var token tradetypes.Token
+
+	err := k.dbHandler.Table(app.TOKEN_TABLE).Where("symbol = ?", request.Name).
+		First(&token).Error
+	if err != nil {
+		return &types.TokenPriceResponse{}, err
+	}
+
+	return &types.TokenPriceResponse{
+		Price: token.PriceInUsd,
+	}, nil
+}
+
 func (k Keeper) PoolShare(ctx context.Context, request *types.PoolShareRequest) (*types.PoolShareResponse, error) {
 	var pool tradetypes.Pool
 
-	// get liquidity
 	err := k.dbHandler.Table(app.POOL_TABLE).Where("pool_address = ?", request.ContractId).
 		Order("tx_time DESC").
 		First(&pool).Error

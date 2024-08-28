@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	TickerQuery_Tickers_FullMethodName                 = "/ticker.TickerQuery/Tickers"
+	TickerQuery_Price_FullMethodName                   = "/ticker.TickerQuery/Price"
 	TickerQuery_PoolShare_FullMethodName               = "/ticker.TickerQuery/PoolShare"
 	TickerQuery_PoolReserveA_FullMethodName            = "/ticker.TickerQuery/PoolReserveA"
 	TickerQuery_PoolReserveB_FullMethodName            = "/ticker.TickerQuery/PoolReserveB"
@@ -32,6 +33,7 @@ const (
 type TickerQueryClient interface {
 	// Tickers provides 24-hour pricing and volume information.
 	Tickers(ctx context.Context, in *TickersRequest, opts ...grpc.CallOption) (*TickersResponse, error)
+	Price(ctx context.Context, in *TokenPriceRequest, opts ...grpc.CallOption) (*TokenPriceResponse, error)
 	// Liquidity
 	PoolShare(ctx context.Context, in *PoolShareRequest, opts ...grpc.CallOption) (*PoolShareResponse, error)
 	PoolReserveA(ctx context.Context, in *PoolReserveARequest, opts ...grpc.CallOption) (*PoolReserveAResponse, error)
@@ -51,6 +53,16 @@ func (c *tickerQueryClient) Tickers(ctx context.Context, in *TickersRequest, opt
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(TickersResponse)
 	err := c.cc.Invoke(ctx, TickerQuery_Tickers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tickerQueryClient) Price(ctx context.Context, in *TokenPriceRequest, opts ...grpc.CallOption) (*TokenPriceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TokenPriceResponse)
+	err := c.cc.Invoke(ctx, TickerQuery_Price_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -103,6 +115,7 @@ func (c *tickerQueryClient) PoolTotalLiquidityInUsd(ctx context.Context, in *Poo
 type TickerQueryServer interface {
 	// Tickers provides 24-hour pricing and volume information.
 	Tickers(context.Context, *TickersRequest) (*TickersResponse, error)
+	Price(context.Context, *TokenPriceRequest) (*TokenPriceResponse, error)
 	// Liquidity
 	PoolShare(context.Context, *PoolShareRequest) (*PoolShareResponse, error)
 	PoolReserveA(context.Context, *PoolReserveARequest) (*PoolReserveAResponse, error)
@@ -120,6 +133,9 @@ type UnimplementedTickerQueryServer struct{}
 
 func (UnimplementedTickerQueryServer) Tickers(context.Context, *TickersRequest) (*TickersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Tickers not implemented")
+}
+func (UnimplementedTickerQueryServer) Price(context.Context, *TokenPriceRequest) (*TokenPriceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Price not implemented")
 }
 func (UnimplementedTickerQueryServer) PoolShare(context.Context, *PoolShareRequest) (*PoolShareResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PoolShare not implemented")
@@ -168,6 +184,24 @@ func _TickerQuery_Tickers_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TickerQueryServer).Tickers(ctx, req.(*TickersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TickerQuery_Price_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TokenPriceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TickerQueryServer).Price(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TickerQuery_Price_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TickerQueryServer).Price(ctx, req.(*TokenPriceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -254,6 +288,10 @@ var TickerQuery_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Tickers",
 			Handler:    _TickerQuery_Tickers_Handler,
+		},
+		{
+			MethodName: "Price",
+			Handler:    _TickerQuery_Price_Handler,
 		},
 		{
 			MethodName: "PoolShare",

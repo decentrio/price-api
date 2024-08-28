@@ -15,6 +15,12 @@ service TickerQuery {
     };
   }
 
+  rpc Price(TokenPriceRequest) returns (TokenPriceResponse) {
+    option (google.api.http) = {
+      get : "/price/{name}"
+      response_body : "price"
+    };
+  }
   // Liquidity
   rpc PoolShare(PoolShareRequest) returns (PoolShareResponse) {
     option (google.api.http).get = "/liquidity/{contract_id}/pool_shares";
@@ -25,7 +31,8 @@ service TickerQuery {
   rpc PoolReserveB(PoolReserveBRequest) returns (PoolReserveBResponse) {
     option (google.api.http).get = "/liquidity/{contract_id}/pool_reserve_b";
   }
-  rpc PoolTotalLiquidityInUsd(PoolTotalLiquidityInUsdRequest) returns (PoolTotalLiquidityInUsdResponse) {
+  rpc PoolTotalLiquidityInUsd(PoolTotalLiquidityInUsdRequest)
+      returns (PoolTotalLiquidityInUsdResponse) {
     option (google.api.http).get = "/liquidity/{contract_id}/total_in_usd";
   }
 }
@@ -34,34 +41,22 @@ message TickersRequest {}
 
 message TickersResponse { repeated TickerInfo tickers = 1; }
 
-message PoolShareRequest {
-  string contract_id = 1;
-}
+message TokenPriceRequest { string name = 1; }
 
-message PoolShareResponse {
-  double amount = 1;
-}
+message TokenPriceResponse { double price = 1; }
 
-message PoolReserveARequest {
-  string contract_id = 1;
-}
+message PoolShareRequest { string contract_id = 1; }
 
-message PoolReserveAResponse {
-  double amount = 1;
-}
+message PoolShareResponse { double amount = 1; }
 
-message PoolReserveBRequest {
-  string contract_id = 1;
-}
+message PoolReserveARequest { string contract_id = 1; }
 
-message PoolReserveBResponse {
-  double amount = 1;
-}
+message PoolReserveAResponse { double amount = 1; }
 
-message PoolTotalLiquidityInUsdRequest{
-  string contract_id = 1;
-}
+message PoolReserveBRequest { string contract_id = 1; }
 
-message PoolTotalLiquidityInUsdResponse{
-  double amount = 1;
-}
+message PoolReserveBResponse { double amount = 1; }
+
+message PoolTotalLiquidityInUsdRequest { string contract_id = 1; }
+
+message PoolTotalLiquidityInUsdResponse { double amount = 1; }
