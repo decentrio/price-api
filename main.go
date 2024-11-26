@@ -22,6 +22,7 @@ import (
 	"github.com/decentrio/price-api/app/user"
 	tickertypes "github.com/decentrio/price-api/types/ticker"
 	tradetypes "github.com/decentrio/price-api/types/trade"
+	usertypes "github.com/decentrio/price-api/types/user"
 )
 
 func initModule() []app.AppModule {
@@ -65,6 +66,11 @@ func runHTTPServer() error {
 	}
 
 	err = tradetypes.RegisterTradeQueryHandlerFromEndpoint(ctx, mux, ":5060", opts)
+	if err != nil {
+		return err
+	}
+
+	err = usertypes.RegisterUserQueryHandlerFromEndpoint(ctx, mux, ":5060", opts)
 	if err != nil {
 		return err
 	}

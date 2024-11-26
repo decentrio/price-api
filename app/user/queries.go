@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"fmt"
+	"time"
 
 	app "github.com/decentrio/price-api/app"
 	types "github.com/decentrio/price-api/types/user"
@@ -16,12 +17,23 @@ func (k Keeper) Activities(ctx context.Context, request *types.ActivitiesRequest
 	}
 
 	var activityInfos []*types.ActivityInfo
-	err := k.dbHandler.Table(app.ACTIVITIES_TABLE).
-		Order("time_stamp DESC").
-		Where("address = ?", request.Address).
-		Where("time_stamp >= ?", request.From).
-		Where("time_stamp <= ?", request.To).
-		Find(&activityInfos).Error
+	query := k.dbHandler.Table(app.ACTIVITIES_TABLE).
+		Order("timestamp DESC").
+		Where("address = ?", request.Address)
+		
+	if request.From != 0 {
+		query = query.Where("timestamp >= ?", request.From)
+	} else {
+		query = query.Where("timestamp >= ?", time.Now().Unix() - 86400)
+	}
+
+	if request.To != 0 {
+		query = query.Where("timestamp >= ?", request.To)
+	} else {
+		query = query.Where("timestamp >= ?", time.Now().Unix())
+	}
+
+	err := query.Find(&activityInfos).Error
 	if err != nil {
 		return &types.ActivitiesResponse{}, err
 	}
@@ -34,6 +46,30 @@ func (k Keeper) Activities(ctx context.Context, request *types.ActivitiesRequest
 
 	return &types.ActivitiesResponse{
 		Activities: activities,
+	}, nil
+}
+
+func (k Keeper) TotalUsers(ctx context.Context, request *types.TotalUsersRequest) (*types.TotalUsersResponse, error) {
+	total := int64(0)
+	user24H := int64(0)
+	oneDayAgo := time.Now().Add(-24 * time.Hour).Unix()
+	err := k.dbHandler.Table(app.ACTIVITIES_TABLE).Select("Count(distinct address)").Scan(&total).Error
+	if err != nil {
+		return &types.TotalUsersResponse{
+			TotalUsers:    total,
+			UsersLast_24H: user24H,
+		}, err
+	}
+	err = k.dbHandler.Table(app.ACTIVITIES_TABLE).Where("timestamp >= ?", oneDayAgo).Select("Count(distinct address)").Scan(&user24H).Error
+	if err != nil {
+		return &types.TotalUsersResponse{
+			TotalUsers:    total,
+			UsersLast_24H: user24H,
+		}, err
+	}
+	return &types.TotalUsersResponse{
+		TotalUsers:    total,
+		UsersLast_24H: user24H,
 	}, nil
 }
 

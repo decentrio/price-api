@@ -74,6 +74,12 @@ service TradeQuery {
       returns (LastYearTradeHistoricalResponse) {
     option (google.api.http).get = "/trade-history/{address}/lastyear";
   }
+  rpc TotalTrades(TotalTradesRequest) returns (TotalTradesResponse) {
+    option (google.api.http).get = "/trades/total";
+  }
+  rpc MostTraded(MostTradedRequest) returns (MostTradedResponse) {
+    option (google.api.http).get = "/assets/most-traded";
+  }
 }
 
 message TradesRequest {
@@ -193,3 +199,14 @@ message LockSharesRequest {
 }
 
 message LockSharesResponse { uint64 shares = 1; }
+
+message TotalTradesRequest {}
+
+message TotalTradesResponse { int64 total_trades = 1; }
+
+message MostTradedRequest {}
+
+message MostTradedResponse {
+  string asset = 1;
+  double usd_volume = 2;
+}

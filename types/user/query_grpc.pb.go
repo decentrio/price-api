@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	UserQuery_Activities_FullMethodName = "/user.UserQuery/Activities"
+	UserQuery_TotalUsers_FullMethodName = "/user.UserQuery/TotalUsers"
 )
 
 // UserQueryClient is the client API for UserQuery service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserQueryClient interface {
 	Activities(ctx context.Context, in *ActivitiesRequest, opts ...grpc.CallOption) (*ActivitiesResponse, error)
+	TotalUsers(ctx context.Context, in *TotalUsersRequest, opts ...grpc.CallOption) (*TotalUsersResponse, error)
 }
 
 type userQueryClient struct {
@@ -47,11 +49,22 @@ func (c *userQueryClient) Activities(ctx context.Context, in *ActivitiesRequest,
 	return out, nil
 }
 
+func (c *userQueryClient) TotalUsers(ctx context.Context, in *TotalUsersRequest, opts ...grpc.CallOption) (*TotalUsersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TotalUsersResponse)
+	err := c.cc.Invoke(ctx, UserQuery_TotalUsers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserQueryServer is the server API for UserQuery service.
 // All implementations must embed UnimplementedUserQueryServer
 // for forward compatibility.
 type UserQueryServer interface {
 	Activities(context.Context, *ActivitiesRequest) (*ActivitiesResponse, error)
+	TotalUsers(context.Context, *TotalUsersRequest) (*TotalUsersResponse, error)
 	mustEmbedUnimplementedUserQueryServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedUserQueryServer struct{}
 
 func (UnimplementedUserQueryServer) Activities(context.Context, *ActivitiesRequest) (*ActivitiesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Activities not implemented")
+}
+func (UnimplementedUserQueryServer) TotalUsers(context.Context, *TotalUsersRequest) (*TotalUsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TotalUsers not implemented")
 }
 func (UnimplementedUserQueryServer) mustEmbedUnimplementedUserQueryServer() {}
 func (UnimplementedUserQueryServer) testEmbeddedByValue()                   {}
@@ -104,6 +120,24 @@ func _UserQuery_Activities_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserQuery_TotalUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TotalUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserQueryServer).TotalUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserQuery_TotalUsers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserQueryServer).TotalUsers(ctx, req.(*TotalUsersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserQuery_ServiceDesc is the grpc.ServiceDesc for UserQuery service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var UserQuery_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Activities",
 			Handler:    _UserQuery_Activities_Handler,
+		},
+		{
+			MethodName: "TotalUsers",
+			Handler:    _UserQuery_TotalUsers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

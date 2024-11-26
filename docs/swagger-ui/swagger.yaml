@@ -245,6 +245,40 @@ paths:
                   additionalProperties: {}
       tags:
         - TickerQuery
+  /assets/most-traded:
+    get:
+      operationId: MostTraded
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              asset:
+                type: string
+              usdVolume:
+                type: number
+                format: double
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - TradeQuery
   /historical_trades:
     get:
       summary: |-
@@ -928,6 +962,38 @@ paths:
           format: uint64
       tags:
         - TradeQuery
+  /trades/total:
+    get:
+      operationId: TotalTrades
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              totalTrades:
+                type: string
+                format: int64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - TradeQuery
   /trading-vol/{contractId}/perday:
     get:
       operationId: TradingVolumePerDay
@@ -960,6 +1026,9 @@ paths:
                     tokenBVolume:
                       type: string
                       format: uint64
+                    usdVolume:
+                      type: number
+                      format: double
         default:
           description: An unexpected error response.
           schema:
@@ -1033,6 +1102,9 @@ paths:
                     tokenBVolume:
                       type: string
                       format: uint64
+                    usdVolume:
+                      type: number
+                      format: double
         default:
           description: An unexpected error response.
           schema:
@@ -1097,6 +1169,9 @@ paths:
                     tokenBVolume:
                       type: string
                       format: uint64
+                    usdVolume:
+                      type: number
+                      format: double
         default:
           description: An unexpected error response.
           schema:
@@ -1161,6 +1236,9 @@ paths:
                     tokenBVolume:
                       type: string
                       format: uint64
+                    usdVolume:
+                      type: number
+                      format: double
         default:
           description: An unexpected error response.
           schema:
@@ -1270,6 +1348,41 @@ paths:
           required: false
           type: integer
           format: int32
+      tags:
+        - UserQuery
+  /users/total:
+    get:
+      operationId: TotalUsers
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              totalUsers:
+                type: string
+                format: int64
+              usersLast24h:
+                type: string
+                format: int64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
       tags:
         - UserQuery
 definitions:
@@ -1523,6 +1636,14 @@ definitions:
       month:
         type: integer
         format: int64
+  tradeMostTradedResponse:
+    type: object
+    properties:
+      asset:
+        type: string
+      usdVolume:
+        type: number
+        format: double
   tradePriceGraph:
     type: object
     properties:
@@ -1612,6 +1733,12 @@ definitions:
           year:
             type: integer
             format: int64
+  tradeTotalTradesResponse:
+    type: object
+    properties:
+      totalTrades:
+        type: string
+        format: int64
   tradeTradeHistoricalResponse:
     type: object
     properties:
@@ -1682,6 +1809,9 @@ definitions:
       tokenBVolume:
         type: string
         format: uint64
+      usdVolume:
+        type: number
+        format: double
   tradeTradeVolumeByHour:
     type: object
     properties:
@@ -1709,6 +1839,9 @@ definitions:
       tokenBVolume:
         type: string
         format: uint64
+      usdVolume:
+        type: number
+        format: double
   tradeTradeVolumeByMonth:
     type: object
     properties:
@@ -1727,6 +1860,9 @@ definitions:
       tokenBVolume:
         type: string
         format: uint64
+      usdVolume:
+        type: number
+        format: double
   tradeTradeVolumeByWeek:
     type: object
     properties:
@@ -1745,6 +1881,9 @@ definitions:
       tokenBVolume:
         type: string
         format: uint64
+      usdVolume:
+        type: number
+        format: double
   tradeTradesResponse:
     type: object
     properties:
@@ -1798,6 +1937,9 @@ definitions:
             tokenBVolume:
               type: string
               format: uint64
+            usdVolume:
+              type: number
+              format: double
   tradeTradingVolumePerHourResponse:
     type: object
     properties:
@@ -1830,6 +1972,9 @@ definitions:
             tokenBVolume:
               type: string
               format: uint64
+            usdVolume:
+              type: number
+              format: double
   tradeTradingVolumePerMonthResponse:
     type: object
     properties:
@@ -1853,6 +1998,9 @@ definitions:
             tokenBVolume:
               type: string
               format: uint64
+            usdVolume:
+              type: number
+              format: double
   tradeTradingVolumePerWeekResponse:
     type: object
     properties:
@@ -1876,6 +2024,9 @@ definitions:
             tokenBVolume:
               type: string
               format: uint64
+            usdVolume:
+              type: number
+              format: double
   tradeWeek:
     type: object
     properties:
@@ -1930,3 +2081,12 @@ definitions:
       timeStamp:
         type: string
         format: uint64
+  userTotalUsersResponse:
+    type: object
+    properties:
+      totalUsers:
+        type: string
+        format: int64
+      usersLast24h:
+        type: string
+        format: int64

@@ -10,7 +10,6 @@ import (
 	app "github.com/decentrio/price-api/app"
 	tickertypes "github.com/decentrio/price-api/types/ticker"
 	types "github.com/decentrio/price-api/types/trade"
-	"golang.org/x/exp/maps"
 )
 
 var _ types.TradeQueryServer = Keeper{}
@@ -169,49 +168,37 @@ func (k Keeper) TradingVolumePerWeek(ctx context.Context, request *types.Trading
 	if to == 0 {
 		to = uint64(curTime)
 	}
-	var trades []*types.Trade
-	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
+
+	var vols []*types.VolWeek
+	err := k.dbHandler.Table(app.TRADE_TABLE).
+		Select("DATE_PART('week', to_timestamp(trade_timestamp)) AS week, "+
+			"EXTRACT(YEAR FROM to_timestamp(trade_timestamp)) AS year, "+
+			"COALESCE(SUM(base_volume), 0) AS base_volume, "+
+			"COALESCE(SUM(target_volume)) AS target_volume, "+
+			"COALESCE(SUM(volume_in_usd)) AS usd_volume").
 		Where("ticker_id = ?", ticker.TickerId).
 		Where("trade_timestamp >= ?", from).
-		Where("trade_timestamp <= ?", to)
-
-	err := query.Find(&trades).Error
+		Where("trade_timestamp <= ?", to).
+		Group("year, week").
+		Order("year DESC, week DESC").
+		Scan(&vols).Error
 	if err != nil {
-		return &types.TradingVolumePerWeekResponse{}, nil
+		return &types.TradingVolumePerWeekResponse{}, err
 	}
-
-	// calculate volume in week
-	tradingVolumes := make(map[string]*types.TradeVolumeByWeek)
-
-	for _, trade := range trades {
-		year, week := time.Unix(int64(trade.TradeTimestamp), 0).ISOWeek()
-
-		tradingWeek := &types.Week{
-			Year: uint32(year),
-			Week: uint32(week),
-		}
-
-		tradingVolume, found := tradingVolumes[tradingWeek.ToString()]
-		if found {
-			tradingVolume.TokenAVolume += trade.BaseVolume
-			tradingVolume.TokenBVolume += trade.TargetVolume
-			tradingVolumes[tradingWeek.ToString()] = tradingVolume
-		} else {
-			tradingVolume := &types.TradeVolumeByWeek{
-				Week:         tradingWeek,
-				TokenAVolume: trade.BaseVolume,
-				TokenBVolume: trade.TargetVolume,
-			}
-
-			tradingVolumes[tradingWeek.ToString()] = tradingVolume
-		}
-
+	volInfos := make([]*types.TradeVolumeByWeek, 0)
+	for _, vol := range vols {
+		volInfos = append(volInfos, &types.TradeVolumeByWeek{
+			Week: &types.Week{
+				Week: uint32(vol.Week),
+				Year: uint32(vol.Year),
+			},
+			TokenAVolume: uint64(vol.BaseVolume),
+			TokenBVolume: uint64(vol.TargetVolume),
+			UsdVolume: vol.USDVolume / 10000000,
+		})
 	}
-
-	vals := maps.Values(tradingVolumes)
-
 	return &types.TradingVolumePerWeekResponse{
-		TradingVolume: vals,
+		TradingVolume: volInfos,
 	}, nil
 }
 
@@ -229,55 +216,41 @@ func (k Keeper) TradingVolumePerMonth(ctx context.Context, request *types.Tradin
 	curTime := time.Now().Unix()
 
 	if from == 0 {
-		from = uint64(curTime - YearSec + MonthSec - curTime%MonthSec)
+		from = uint64(time.Now().AddDate(0, -12, 0).Unix())
 	}
 	if to == 0 {
 		to = uint64(curTime)
 	}
-	var trades []*types.Trade
-	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
+	var vols []*types.VolMonth
+	err := k.dbHandler.Table(app.TRADE_TABLE).
+		Select("EXTRACT(MONTH FROM to_timestamp(trade_timestamp)) AS month, "+
+			"EXTRACT(YEAR FROM to_timestamp(trade_timestamp)) AS year, "+
+			"COALESCE(SUM(base_volume), 0) AS base_volume, "+
+			"COALESCE(SUM(target_volume)) AS target_volume, "+
+			"COALESCE(SUM(volume_in_usd)) AS usd_volume").
 		Where("ticker_id = ?", ticker.TickerId).
 		Where("trade_timestamp >= ?", from).
-		Where("trade_timestamp <= ?", to)
-
-	err := query.Find(&trades).Error
+		Where("trade_timestamp <= ?", to).
+		Group("year, month").
+		Order("year DESC, month DESC").
+		Scan(&vols).Error
 	if err != nil {
-		return &types.TradingVolumePerMonthResponse{}, nil
+		return &types.TradingVolumePerMonthResponse{}, err
 	}
-
-	// calculate volume in month
-	tradingVolumes := make(map[string]*types.TradeVolumeByMonth)
-
-	for _, trade := range trades {
-		year := time.Unix(int64(trade.TradeTimestamp), 0).Year()
-		month := time.Unix(int64(trade.TradeTimestamp), 0).Month()
-
-		tradingMonth := &types.Month{
-			Year:  uint32(year),
-			Month: uint32(month),
-		}
-
-		tradingVolume, found := tradingVolumes[tradingMonth.ToString()]
-		if found {
-			tradingVolume.TokenAVolume += trade.BaseVolume
-			tradingVolume.TokenBVolume += trade.TargetVolume
-			tradingVolumes[tradingMonth.ToString()] = tradingVolume
-		} else {
-			tradingVolume := &types.TradeVolumeByMonth{
-				Month:        tradingMonth,
-				TokenAVolume: trade.BaseVolume,
-				TokenBVolume: trade.TargetVolume,
-			}
-
-			tradingVolumes[tradingMonth.ToString()] = tradingVolume
-		}
-
+	volInfos := make([]*types.TradeVolumeByMonth, 0)
+	for _, vol := range vols {
+		volInfos = append(volInfos, &types.TradeVolumeByMonth{
+			Month: &types.Month{
+				Month: uint32(vol.Month),
+				Year: uint32(vol.Year),
+			},
+			TokenAVolume: uint64(vol.BaseVolume),
+			TokenBVolume: uint64(vol.TargetVolume),
+			UsdVolume: vol.USDVolume / 10000000,
+		})
 	}
-
-	vals := maps.Values(tradingVolumes)
-
 	return &types.TradingVolumePerMonthResponse{
-		TradingVolume: vals,
+		TradingVolume: volInfos,
 	}, nil
 }
 
@@ -300,50 +273,38 @@ func (k Keeper) TradingVolumePerDay(ctx context.Context, request *types.TradingV
 	if to == 0 {
 		to = uint64(curTime)
 	}
-	var trades []*types.Trade
-	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
+	var vols []*types.VolDay
+	err := k.dbHandler.Table(app.TRADE_TABLE).
+		Select("EXTRACT(DAY FROM to_timestamp(trade_timestamp)) AS day, "+
+			"EXTRACT(MONTH FROM to_timestamp(trade_timestamp)) AS month, "+
+			"EXTRACT(YEAR FROM to_timestamp(trade_timestamp)) AS year, "+
+			"COALESCE(SUM(base_volume), 0) AS base_volume, "+
+			"COALESCE(SUM(target_volume)) AS target_volume, "+
+			"COALESCE(SUM(volume_in_usd)) AS usd_volume").
 		Where("ticker_id = ?", ticker.TickerId).
 		Where("trade_timestamp >= ?", from).
-		Where("trade_timestamp <= ?", to)
-
-	err := query.Find(&trades).Error
+		Where("trade_timestamp <= ?", to).
+		Group("year, month, day").
+		Order("year DESC, month DESC, day DESC").
+		Scan(&vols).Error
 	if err != nil {
-		return &types.TradingVolumePerDayResponse{}, nil
+		return &types.TradingVolumePerDayResponse{}, err
 	}
-
-	// calculate volume in month
-	tradingVolumes := make(map[string]*types.TradeVolumeByDate)
-
-	for _, trade := range trades {
-		year, month, day := time.Unix(int64(trade.TradeTimestamp), 0).Date()
-
-		tradingDay := &types.Date{
-			Year:  uint32(year),
-			Month: uint32(month),
-			Day:   uint32(day),
-		}
-
-		tradingVolume, found := tradingVolumes[tradingDay.ToString()]
-		if found {
-			tradingVolume.TokenAVolume += trade.BaseVolume
-			tradingVolume.TokenBVolume += trade.TargetVolume
-			tradingVolumes[tradingDay.ToString()] = tradingVolume
-		} else {
-			tradingVolume := &types.TradeVolumeByDate{
-				Date:         tradingDay,
-				TokenAVolume: trade.BaseVolume,
-				TokenBVolume: trade.TargetVolume,
-			}
-
-			tradingVolumes[tradingDay.ToString()] = tradingVolume
-		}
-
+	volInfos := make([]*types.TradeVolumeByDate, 0)
+	for _, vol := range vols {
+		volInfos = append(volInfos, &types.TradeVolumeByDate{
+			Date: &types.Date{
+				Day: uint32(vol.Day),
+				Month: uint32(vol.Month),
+				Year: uint32(vol.Year),
+			},
+			TokenAVolume: uint64(vol.BaseVolume),
+			TokenBVolume: uint64(vol.TargetVolume),
+			UsdVolume: vol.USDVolume / 10000000,
+		})
 	}
-
-	vals := maps.Values(tradingVolumes)
-
 	return &types.TradingVolumePerDayResponse{
-		TradingVolume: vals,
+		TradingVolume: volInfos,
 	}, nil
 }
 
@@ -366,53 +327,42 @@ func (k Keeper) TradingVolumePerHour(ctx context.Context, request *types.Trading
 	if to == 0 {
 		to = uint64(curTime)
 	}
-	var trades []*types.Trade
-	query := k.dbHandler.Table(app.TRADE_TABLE).Order("trade_timestamp DESC").
+	var vols []*types.VolHour
+	err := k.dbHandler.Table(app.TRADE_TABLE).
+		Select("EXTRACT(HOUR FROM to_timestamp(trade_timestamp)) AS hour, "+
+			"EXTRACT(DAY FROM to_timestamp(trade_timestamp)) AS day, "+
+			"EXTRACT(MONTH FROM to_timestamp(trade_timestamp)) AS month, "+
+			"EXTRACT(YEAR FROM to_timestamp(trade_timestamp)) AS year, "+
+			"COALESCE(SUM(base_volume), 0) AS base_volume, "+
+			"COALESCE(SUM(target_volume)) AS target_volume, "+
+			"COALESCE(SUM(volume_in_usd)) AS usd_volume").
 		Where("ticker_id = ?", ticker.TickerId).
 		Where("trade_timestamp >= ?", from).
-		Where("trade_timestamp <= ?", to)
-
-	err := query.Find(&trades).Error
+		Where("trade_timestamp <= ?", to).
+		Group("year, month, day, hour").
+		Order("year DESC, month DESC, day DESC, hour DESC").
+		Scan(&vols).Error
 	if err != nil {
-		return &types.TradingVolumePerHourResponse{}, nil
+		return &types.TradingVolumePerHourResponse{}, err
 	}
-
-	// calculate volume in hour
-	tradingVolumes := make(map[string]*types.TradeVolumeByHour)
-
-	for _, trade := range trades {
-		year, month, day := time.Unix(int64(trade.TradeTimestamp), 0).Date()
-		hour, _, _ := time.Unix(int64(trade.TradeTimestamp), 0).Clock()
-
-		tradingHour := &types.TimeHour{
-			Hour: uint32(hour),
-			Date: &types.Date{
-				Year:  uint32(year),
-				Month: uint32(month),
-				Day:   uint32(day),
+	volInfos := make([]*types.TradeVolumeByHour, 0)
+	for _, vol := range vols {
+		volInfos = append(volInfos, &types.TradeVolumeByHour{
+			Time: &types.TimeHour{
+				Hour: uint32(vol.Hour),
+				Date: &types.Date{
+					Day: uint32(vol.Day),
+					Month: uint32(vol.Month),
+					Year: uint32(vol.Year),
+				},
 			},
-		}
-
-		tradingVolume, found := tradingVolumes[tradingHour.ToString()]
-		if found {
-			tradingVolume.TokenAVolume += trade.BaseVolume
-			tradingVolume.TokenBVolume += trade.TargetVolume
-			tradingVolumes[tradingHour.ToString()] = tradingVolume
-		} else {
-			tradingVolume := &types.TradeVolumeByHour{
-				Time:         tradingHour,
-				TokenAVolume: trade.BaseVolume,
-				TokenBVolume: trade.TargetVolume,
-			}
-
-			tradingVolumes[tradingHour.ToString()] = tradingVolume
-		}
+			TokenAVolume: uint64(vol.BaseVolume),
+			TokenBVolume: uint64(vol.TargetVolume),
+			UsdVolume: vol.USDVolume / 10000000,
+		})
 	}
-
-	vals := maps.Values(tradingVolumes)
-
 	return &types.TradingVolumePerHourResponse{
-		TradingVolume: vals,
+		TradingVolume: volInfos,
 	}, nil
 }
 
@@ -717,5 +667,61 @@ func (k Keeper) LastYearTradeHistoricals(ctx context.Context, request *types.Las
 
 	return &types.LastYearTradeHistoricalResponse{
 		Trades: tradeInfos,
+	}, nil
+}
+
+func (k Keeper) TotalTrades(ctx context.Context, request *types.TotalTradesRequest) (*types.TotalTradesResponse, error) {
+	count := int64(0)
+	err := k.dbHandler.Table(app.TRADE_TABLE).Count(&count).Error
+	if err != nil {
+		return &types.TotalTradesResponse{
+			TotalTrades: count,
+		}, err
+	}
+
+	return &types.TotalTradesResponse{
+		TotalTrades: count,
+	}, nil
+}
+
+func (k Keeper) MostTraded(ctx context.Context, request *types.MostTradedRequest) (*types.MostTradedResponse, error) {
+	var tokens []*types.Token
+	err := k.dbHandler.Table(app.TOKEN_TABLE).Find(&tokens).Error
+	if err != nil {
+		return &types.MostTradedResponse{}, err
+	}
+	maxVol := float64(0)
+	maxIdx := 0
+	oneDayAgo := time.Now().Unix() - 86400
+	for idx, token := range tokens {
+		tickers := []string{}
+		err := k.dbHandler.Table(app.TICKER_TABLE).
+			Where("base_currency = ?", token.TokenName).
+			Or("target_currency = ?", token.TokenName).
+			Select("ticker_id").
+			Find(&tickers).Error
+		if err != nil {
+			return &types.MostTradedResponse{}, err
+		}
+		volume := float64(64)
+		for _, ticker := range tickers {
+			poolVol := float64(0)
+			err = k.dbHandler.Table(app.TRADE_TABLE).
+				Where("ticker_id = ?", ticker).
+				Where("trade_timestamp >= ?", oneDayAgo).
+				Select("COALESCE(sum(volume_in_usd), 0) as total").Scan(&poolVol).Error
+			if err != nil {
+				return &types.MostTradedResponse{}, err
+			}
+			volume += poolVol
+		}
+		if maxVol < volume {
+			maxIdx = idx
+			maxVol = volume
+		}
+	}
+	return &types.MostTradedResponse{
+		Asset:     tokens[maxIdx].Symbol,
+		UsdVolume: maxVol / 10000000,
 	}, nil
 }

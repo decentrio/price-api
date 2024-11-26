@@ -35,6 +35,8 @@ const (
 	TradeQuery_LastWeekTradeHistoricals_FullMethodName  = "/trade.TradeQuery/LastWeekTradeHistoricals"
 	TradeQuery_LastMonthTradeHistoricals_FullMethodName = "/trade.TradeQuery/LastMonthTradeHistoricals"
 	TradeQuery_LastYearTradeHistoricals_FullMethodName  = "/trade.TradeQuery/LastYearTradeHistoricals"
+	TradeQuery_TotalTrades_FullMethodName               = "/trade.TradeQuery/TotalTrades"
+	TradeQuery_MostTraded_FullMethodName                = "/trade.TradeQuery/MostTraded"
 )
 
 // TradeQueryClient is the client API for TradeQuery service.
@@ -59,6 +61,8 @@ type TradeQueryClient interface {
 	LastWeekTradeHistoricals(ctx context.Context, in *LastWeekTradeHistoricalRequest, opts ...grpc.CallOption) (*LastWeekTradeHistoricalResponse, error)
 	LastMonthTradeHistoricals(ctx context.Context, in *LastMonthTradeHistoricalRequest, opts ...grpc.CallOption) (*LastMonthTradeHistoricalResponse, error)
 	LastYearTradeHistoricals(ctx context.Context, in *LastYearTradeHistoricalRequest, opts ...grpc.CallOption) (*LastYearTradeHistoricalResponse, error)
+	TotalTrades(ctx context.Context, in *TotalTradesRequest, opts ...grpc.CallOption) (*TotalTradesResponse, error)
+	MostTraded(ctx context.Context, in *MostTradedRequest, opts ...grpc.CallOption) (*MostTradedResponse, error)
 }
 
 type tradeQueryClient struct {
@@ -229,6 +233,26 @@ func (c *tradeQueryClient) LastYearTradeHistoricals(ctx context.Context, in *Las
 	return out, nil
 }
 
+func (c *tradeQueryClient) TotalTrades(ctx context.Context, in *TotalTradesRequest, opts ...grpc.CallOption) (*TotalTradesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TotalTradesResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_TotalTrades_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *tradeQueryClient) MostTraded(ctx context.Context, in *MostTradedRequest, opts ...grpc.CallOption) (*MostTradedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MostTradedResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_MostTraded_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TradeQueryServer is the server API for TradeQuery service.
 // All implementations must embed UnimplementedTradeQueryServer
 // for forward compatibility.
@@ -251,6 +275,8 @@ type TradeQueryServer interface {
 	LastWeekTradeHistoricals(context.Context, *LastWeekTradeHistoricalRequest) (*LastWeekTradeHistoricalResponse, error)
 	LastMonthTradeHistoricals(context.Context, *LastMonthTradeHistoricalRequest) (*LastMonthTradeHistoricalResponse, error)
 	LastYearTradeHistoricals(context.Context, *LastYearTradeHistoricalRequest) (*LastYearTradeHistoricalResponse, error)
+	TotalTrades(context.Context, *TotalTradesRequest) (*TotalTradesResponse, error)
+	MostTraded(context.Context, *MostTradedRequest) (*MostTradedResponse, error)
 	mustEmbedUnimplementedTradeQueryServer()
 }
 
@@ -308,6 +334,12 @@ func (UnimplementedTradeQueryServer) LastMonthTradeHistoricals(context.Context, 
 }
 func (UnimplementedTradeQueryServer) LastYearTradeHistoricals(context.Context, *LastYearTradeHistoricalRequest) (*LastYearTradeHistoricalResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LastYearTradeHistoricals not implemented")
+}
+func (UnimplementedTradeQueryServer) TotalTrades(context.Context, *TotalTradesRequest) (*TotalTradesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TotalTrades not implemented")
+}
+func (UnimplementedTradeQueryServer) MostTraded(context.Context, *MostTradedRequest) (*MostTradedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MostTraded not implemented")
 }
 func (UnimplementedTradeQueryServer) mustEmbedUnimplementedTradeQueryServer() {}
 func (UnimplementedTradeQueryServer) testEmbeddedByValue()                    {}
@@ -618,6 +650,42 @@ func _TradeQuery_LastYearTradeHistoricals_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TradeQuery_TotalTrades_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TotalTradesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).TotalTrades(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_TotalTrades_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).TotalTrades(ctx, req.(*TotalTradesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TradeQuery_MostTraded_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MostTradedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).MostTraded(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_MostTraded_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).MostTraded(ctx, req.(*MostTradedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TradeQuery_ServiceDesc is the grpc.ServiceDesc for TradeQuery service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -688,6 +756,14 @@ var TradeQuery_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LastYearTradeHistoricals",
 			Handler:    _TradeQuery_LastYearTradeHistoricals_Handler,
+		},
+		{
+			MethodName: "TotalTrades",
+			Handler:    _TradeQuery_TotalTrades_Handler,
+		},
+		{
+			MethodName: "MostTraded",
+			Handler:    _TradeQuery_MostTraded_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
