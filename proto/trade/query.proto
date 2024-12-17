@@ -3,6 +3,7 @@ package trade;
 
 import "google/api/annotations.proto";
 import "trade/trade.proto";
+import "trade/token.proto";
 
 option go_package = "github.com/decentrio/price-api/types/trade";
 
@@ -79,6 +80,9 @@ service TradeQuery {
   }
   rpc MostTraded(MostTradedRequest) returns (MostTradedResponse) {
     option (google.api.http).get = "/assets/most-traded";
+  }
+  rpc TokenPrices(TokenPricesRequest) returns (TokenPricesResponse) {
+    option (google.api.http).get = "/assets/price/{id}";
   }
 }
 
@@ -210,3 +214,11 @@ message MostTradedResponse {
   string asset = 1;
   double usd_volume = 2;
 }
+
+message TokenPricesRequest {
+  string id = 1;
+  uint64 from = 2;
+  uint64 to = 3;
+}
+
+message TokenPricesResponse { repeated TokenPrice prices = 1; }

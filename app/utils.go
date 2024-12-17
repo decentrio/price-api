@@ -7,6 +7,7 @@ const (
 	STAKE_TABLE  	 = "stakes"
 	TOKEN_TABLE  	 = "tokens"
 	TRADE_TABLE      = "historical_trades"
+	PRICE_TABLE      = "token_prices"
 	ACTIVITIES_TABLE = "activities"
 	DAY              = 86400
 	PAGE_SIZE        = 20

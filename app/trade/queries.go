@@ -696,8 +696,8 @@ func (k Keeper) MostTraded(ctx context.Context, request *types.MostTradedRequest
 	for idx, token := range tokens {
 		tickers := []string{}
 		err := k.dbHandler.Table(app.TICKER_TABLE).
-			Where("base_currency = ?", token.TokenName).
-			Or("target_currency = ?", token.TokenName).
+			Where("base_currency = ?", token.Id).
+			Or("target_currency = ?", token.Id).
 			Select("ticker_id").
 			Find(&tickers).Error
 		if err != nil {
@@ -723,5 +723,37 @@ func (k Keeper) MostTraded(ctx context.Context, request *types.MostTradedRequest
 	return &types.MostTradedResponse{
 		Asset:     tokens[maxIdx].Symbol,
 		UsdVolume: maxVol / 10000000,
+	}, nil
+}
+
+func (k Keeper) TokenPrices(ctx context.Context, request *types.TokenPricesRequest) (*types.TokenPricesResponse, error) {
+	if request.Id == "" {
+		return &types.TokenPricesResponse{}, fmt.Errorf("error empty token id")
+	}
+
+	from := request.From
+	to := request.To
+
+	curTime := time.Now().Unix()
+
+	if from == 0 {
+		from = uint64(curTime - DaySec)
+	}
+	if to == 0 {
+		to = uint64(curTime)
+	}
+
+	var prices []*types.TokenPrice
+	err := k.dbHandler.Table(app.PRICE_TABLE).
+		Where("id = ?", request.Id).
+		Where("tx_time >= ?", from).
+		Where("tx_time <= ?", to).
+		Find(&prices).Error
+
+	if err != nil {
+		return &types.TokenPricesResponse{}, err
+	}
+	return &types.TokenPricesResponse{
+		Prices: prices,
 	}, nil
 }

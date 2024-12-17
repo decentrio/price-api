@@ -37,6 +37,7 @@ const (
 	TradeQuery_LastYearTradeHistoricals_FullMethodName  = "/trade.TradeQuery/LastYearTradeHistoricals"
 	TradeQuery_TotalTrades_FullMethodName               = "/trade.TradeQuery/TotalTrades"
 	TradeQuery_MostTraded_FullMethodName                = "/trade.TradeQuery/MostTraded"
+	TradeQuery_TokenPrices_FullMethodName               = "/trade.TradeQuery/TokenPrices"
 )
 
 // TradeQueryClient is the client API for TradeQuery service.
@@ -63,6 +64,7 @@ type TradeQueryClient interface {
 	LastYearTradeHistoricals(ctx context.Context, in *LastYearTradeHistoricalRequest, opts ...grpc.CallOption) (*LastYearTradeHistoricalResponse, error)
 	TotalTrades(ctx context.Context, in *TotalTradesRequest, opts ...grpc.CallOption) (*TotalTradesResponse, error)
 	MostTraded(ctx context.Context, in *MostTradedRequest, opts ...grpc.CallOption) (*MostTradedResponse, error)
+	TokenPrices(ctx context.Context, in *TokenPricesRequest, opts ...grpc.CallOption) (*TokenPricesResponse, error)
 }
 
 type tradeQueryClient struct {
@@ -253,6 +255,16 @@ func (c *tradeQueryClient) MostTraded(ctx context.Context, in *MostTradedRequest
 	return out, nil
 }
 
+func (c *tradeQueryClient) TokenPrices(ctx context.Context, in *TokenPricesRequest, opts ...grpc.CallOption) (*TokenPricesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TokenPricesResponse)
+	err := c.cc.Invoke(ctx, TradeQuery_TokenPrices_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TradeQueryServer is the server API for TradeQuery service.
 // All implementations must embed UnimplementedTradeQueryServer
 // for forward compatibility.
@@ -277,6 +289,7 @@ type TradeQueryServer interface {
 	LastYearTradeHistoricals(context.Context, *LastYearTradeHistoricalRequest) (*LastYearTradeHistoricalResponse, error)
 	TotalTrades(context.Context, *TotalTradesRequest) (*TotalTradesResponse, error)
 	MostTraded(context.Context, *MostTradedRequest) (*MostTradedResponse, error)
+	TokenPrices(context.Context, *TokenPricesRequest) (*TokenPricesResponse, error)
 	mustEmbedUnimplementedTradeQueryServer()
 }
 
@@ -340,6 +353,9 @@ func (UnimplementedTradeQueryServer) TotalTrades(context.Context, *TotalTradesRe
 }
 func (UnimplementedTradeQueryServer) MostTraded(context.Context, *MostTradedRequest) (*MostTradedResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MostTraded not implemented")
+}
+func (UnimplementedTradeQueryServer) TokenPrices(context.Context, *TokenPricesRequest) (*TokenPricesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TokenPrices not implemented")
 }
 func (UnimplementedTradeQueryServer) mustEmbedUnimplementedTradeQueryServer() {}
 func (UnimplementedTradeQueryServer) testEmbeddedByValue()                    {}
@@ -686,6 +702,24 @@ func _TradeQuery_MostTraded_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TradeQuery_TokenPrices_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TokenPricesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TradeQueryServer).TokenPrices(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TradeQuery_TokenPrices_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TradeQueryServer).TokenPrices(ctx, req.(*TokenPricesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TradeQuery_ServiceDesc is the grpc.ServiceDesc for TradeQuery service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -764,6 +798,10 @@ var TradeQuery_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MostTraded",
 			Handler:    _TradeQuery_MostTraded_Handler,
+		},
+		{
+			MethodName: "TokenPrices",
+			Handler:    _TradeQuery_TokenPrices_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

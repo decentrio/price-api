@@ -69,7 +69,7 @@ func (k Keeper) Price(ctx context.Context, request *types.TokenPriceRequest) (*t
 	}
 
 	return &types.TokenPriceResponse{
-		Price: token.PriceInUsd,
+		Price: token.Price,
 	}, nil
 }
 
@@ -137,9 +137,9 @@ func (k Keeper) getTokenPriceInUsd(tokenName string) float64 {
 		return float64(1)
 	} else {
 		var token tradetypes.Token
-		if err := k.dbHandler.Table(app.TOKEN_TABLE).Where("token_name = ?", tokenName).Scan(&token).Error; err != nil {
+		if err := k.dbHandler.Table(app.TOKEN_TABLE).Where("id = ?", tokenName).Scan(&token).Error; err != nil {
 			return 0
 		}
-		return token.PriceInUsd
+		return token.Price
 	}
 }
