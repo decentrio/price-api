@@ -2,6 +2,7 @@ package ticker
 
 import (
 	"context"
+	"strings"
 
 	app "github.com/decentrio/price-api/app"
 	types "github.com/decentrio/price-api/types/ticker"
@@ -57,7 +58,7 @@ func convertToInfo(ticker *types.Ticker) *types.TickerInfo {
 func (k Keeper) Price(ctx context.Context, request *types.TokenPriceRequest) (*types.TokenPriceResponse, error) {
 	var token tradetypes.Token
 
-	if request.Name == "USDC" {
+	if strings.HasPrefix(request.Name, "USD") {
 		return &types.TokenPriceResponse{
 			Price: 1,
 		}, nil
@@ -133,7 +134,7 @@ func (k Keeper) PoolTotalLiquidityInUsd(ctx context.Context, request *types.Pool
 }
 
 func (k Keeper) getTokenPriceInUsd(tokenName string) float64 {
-	if tokenName == UsdcTokenName {
+	if strings.HasPrefix(tokenName, "USD") {
 		return float64(1)
 	} else {
 		var token tradetypes.Token
