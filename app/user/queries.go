@@ -28,9 +28,9 @@ func (k Keeper) Activities(ctx context.Context, request *types.ActivitiesRequest
 	}
 
 	if request.To != 0 {
-		query = query.Where("timestamp >= ?", request.To)
+		query = query.Where("timestamp <= ?", request.To)
 	} else {
-		query = query.Where("timestamp >= ?", time.Now().Unix())
+		query = query.Where("timestamp <= ?", time.Now().Unix())
 	}
 
 	err := query.Find(&activityInfos).Error
@@ -78,7 +78,7 @@ func convertToInfo(act *types.ActivityInfo) *types.Activity {
 	targetVol := float64(act.TargetVolume) / 10000000.0
 
 	return &types.Activity{
-		User:           act.User,
+		User:           act.Address,
 		ActionType:     act.ActionType,
 		BaseCurrency:   act.BaseCurrency,
 		BaseVolume:     baseVol,
