@@ -84,6 +84,6 @@ func convertToInfo(act *types.ActivityInfo) *types.Activity {
 		BaseVolume:     baseVol,
 		TargetCurrency: act.TargetCurrency,
 		TargetVolume:   targetVol,
-		TimeStamp:      act.TimeStamp,
+		TimeStamp:      act.Timestamp,
 	}
 }
