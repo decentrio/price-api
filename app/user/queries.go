@@ -20,7 +20,8 @@ func (k Keeper) Activities(ctx context.Context, request *types.ActivitiesRequest
 	query := k.dbHandler.Table(app.ACTIVITIES_TABLE).
 		Order("timestamp DESC").
 		Where("address = ?", request.Address).
-		Distinct("address", "timestamp")
+		Distinct("address", "timestamp").
+		Select("*")
 		
 	if request.From != 0 {
 		query = query.Where("timestamp >= ?", request.From)
