@@ -33,6 +33,8 @@ func (k Keeper) Trades(ctx context.Context, request *types.TradesRequest) (*type
 	}
 	if request.Limit != 0 {
 		query = query.Limit(int(request.Limit))
+	} else {
+		query = query.Limit(500)
 	}
 
 	err := query.Find(&trades).Error
@@ -70,6 +72,8 @@ func (k Keeper) AdvancedTrades(ctx context.Context, request *types.AdvancedTrade
 	}
 	if request.Limit != 0 {
 		query = query.Limit(int(request.Limit))
+	} else {
+		query = query.Limit(500)
 	}
 	if request.Address != "" {
 		query = query.Where("maker = ?", request.Address)
